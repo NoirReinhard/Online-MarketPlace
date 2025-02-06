@@ -1,11 +1,13 @@
 import Button from "@/app/elements/Button";
+import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
 import Image from "next/image";
 import React from "react";
 
 const route = async ({ params }) => {
-  const details = params.Details;
-  const products = await Product.findById(details);
+  const { Details } = await params;
+  await connectDB();
+  const products = await Product.findById(Details);
 
   return (
     <div>

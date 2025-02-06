@@ -4,11 +4,13 @@ import Product from "@/app/models/Products";
 import { NextResponse } from "next/server";
 import { getSession } from "@/app/lib/getSession";
 import { User } from "@/app/models/User";
+import connectDB from "@/app/lib/db";
 import { redirect } from "next/navigation";
 
 const UserFind = async () => {
   const { user } = await getSession();
   const em = user.email;
+  await connectDB();
   const userRecord = await User.findOne({ email: em });
   const { username } = userRecord;
   return { username, email: em };

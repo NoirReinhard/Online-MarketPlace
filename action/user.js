@@ -9,6 +9,7 @@ import { signIn } from "@/auth";
 const login = async (formData) => {
   const email = formData.get("email");
   const password = formData.get("password");
+  await connectDB();
   const findRole = await User.findOne({ email });
   try {
     await signIn("credentials", {

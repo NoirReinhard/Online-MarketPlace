@@ -4,6 +4,7 @@ import { getSession } from "./lib/getSession";
 import { redirect } from "next/navigation";
 import Product from "./models/Products";
 import ProductCard from "./components/ProductCard";
+import connectDB from "./lib/db";
 
 const page = async () => {
   const session = await getSession();
@@ -14,6 +15,7 @@ const page = async () => {
   } else {
     redirect("/Login");
   }
+  await connectDB();
   const products1 = await Product.find();
   for (const product of products1) {
     if (typeof product.createdAt === "string") {
