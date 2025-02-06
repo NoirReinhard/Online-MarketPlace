@@ -15,7 +15,6 @@ import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const { data: session } = useSession();
-  console.log("notSession:", !session);
   const [toggle, setToggle] = useState(false);
   const [cart, setcart] = useState(false);
 

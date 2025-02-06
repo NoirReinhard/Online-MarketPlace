@@ -9,10 +9,7 @@ import { signIn } from "@/auth";
 const login = async (formData) => {
   const email = formData.get("email");
   const password = formData.get("password");
-  console.log("Type:",typeof email);
   const findRole = await User.findOne({ email });
-  console.log(findRole.role);
-
   try {
     await signIn("credentials", {
       redirect: false,
@@ -33,7 +30,6 @@ const register = async (formData) => {
   const password = formData.get("password");
   const email = formData.get("email");
   const role = formData.get("role");
-  console.log(username);
   if (!username || !password || !email) throw new Error("Fill All the Fields");
   await connectDB();
 
@@ -41,8 +37,6 @@ const register = async (formData) => {
   if (existinguser) throw new Error("User Already Exists");
   const hashedPwd = await hash(password, 12);
   await User.create({ username, email, password: hashedPwd, role });
-  console.log(hashedPwd);
-  console.log("User Created Successfully");
   redirect("/Login");
 };
 export { register, login };

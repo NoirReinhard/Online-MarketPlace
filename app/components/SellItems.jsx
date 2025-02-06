@@ -1,13 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import Button from "../elements/Button";
+import { useRouter } from "next/navigation";
 
 const sellItems = () => {
   const [image, setImage] = useState(null);
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]); // Save the selected image
+    setImage(e.target.files[0]);
   };
+  const router = useRouter();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -18,19 +20,23 @@ const sellItems = () => {
     formData.append("description", e.target.description.value);
     formData.append("address", e.target.address.value);
 
-    console.log(image);
-    console.log(e.target.productName.value);
+    
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (res.ok) {
       const data = await res.json();
-      console.log("Upload Successful:", data);
-    } else {
-      console.error("Upload Failed:", res.statusText);
+      if (data) {
+        // If the product upload is successful, redirect to the seller page
+        router.push("/seller");
+      } else {
+        alert(data.error || "Failed to upload product");
+      }
+    } catch (error) {
+      console.error("Error uploading product:", error);
+      alert("An error occurred while uploading the product.");
     }
   };
 
@@ -81,7 +87,10 @@ const sellItems = () => {
           </div>
 
           <div>
-            <label htmlFor="image" className="block my-5 rounded-sm font-semibold">
+            <label
+              htmlFor="image"
+              className="block my-5 rounded-sm font-semibold"
+            >
               Address
             </label>
             <textarea
@@ -94,7 +103,10 @@ const sellItems = () => {
           </div>
 
           <div>
-            <label htmlFor="image" className="block my-5 rounded-sm font-semibold">
+            <label
+              htmlFor="image"
+              className="block my-5 rounded-sm font-semibold"
+            >
               Image
             </label>
             <input

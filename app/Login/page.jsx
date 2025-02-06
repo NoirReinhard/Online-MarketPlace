@@ -9,7 +9,6 @@ import { redirect } from "next/navigation";
 const Login = async () => {
   const session = await getSession();
   const user = session?.user;
-  console.log("User", user);
   if (user) {
     if (user.role == "admin") redirect("/Dashboard");
     else if (user.role == "seller") redirect("/seller");

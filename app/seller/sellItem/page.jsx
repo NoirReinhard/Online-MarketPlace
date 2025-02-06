@@ -1,4 +1,4 @@
-import SellItems from '../components/SellItems';
+import SellItems from '../../components/SellItems';
 
 const sellItem = () => {
   return (

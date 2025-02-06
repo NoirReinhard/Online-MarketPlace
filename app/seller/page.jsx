@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
 import React from "react";
 import { getSession } from "../lib/getSession";
-import SellItems from "@/app/components/SellItems";
-import Image from "next/image";
 import connectDB from "../lib/db";
 import Product from "../models/Products";
-import Button from "../elements/Button";
+import ProductCard from "../components/ProductCard";
 
 const seller = async () => {
   const session = await getSession();
@@ -14,28 +12,22 @@ const seller = async () => {
     if (user.role == "buyer") redirect("/");
   } else redirect("/Login");
   await connectDB();
-  const product = await Product.find({ "seller.email": user.email });
+  const products1 = await Product.find();
+  for (const product of products1) {
+    if (typeof product.createdAt === "string") {
+      const dateObj = new Date(product.createdAt);
+    }
+  }
+  const products = await Product.find().sort({ dateobj: -1, _id: -1 }).lean();
+  const serializedProducts = products.map((product) => ({
+    ...product,
+    _id: product._id.toString(), // Convert ObjectId to string
+  }));
   return (
     <>
       <div className="sm:px-16 px-8 sm:py-10 pb-12 card_grid gap-5">
-        {product.map((product) => (
-          <div key={product._id} className="startup-card w-[350px] flex flex-col h-[490px] group">
-            <p className="">{product.createdAt}</p>
-            <p className="text-16-medium pt-[20px]">{product.seller.name}</p>
-            <p className="text-26-semibold capitalize line-clamp-1">{product.name}</p>
-            <p className=" startup-card_desc">{product.description}</p>
-            <Image
-              src={product.imageUrl}
-              width={150}
-              height={150}
-              alt="Obito"
-              className="w-[350px] h-[200px] object-cover max-w-[100%] rounded-lg pt-[5px]"
-            />
-            <div className="flex justify-between items-center pt-[15px] ">
-            <p className="font-semibold text-2xl">₹{product.price}</p>
-            <Button label="Add To Cart" rounded />
-            </div>
-          </div>
+        {serializedProducts.map((product,i) => (
+         <ProductCard key={i} product={product} ishome="False"/>
         ))}
       </div>      
     </>

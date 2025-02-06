@@ -15,6 +15,7 @@ export default {
         border:"#4b5966",
         formborder:"#d4d3d3",
         button_color:"#5caf90",
+        gold:"#FBE843",
         primary: {
 					"100": "#E8FFF0",
 					DEFAULT: "#24BF55",

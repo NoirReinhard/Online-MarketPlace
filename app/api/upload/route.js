@@ -1,9 +1,10 @@
 import { v2 as cloudinary } from "cloudinary";
 import connectDB from "@/app/lib/db";
-import Product from "@/app/models/Products"; 
+import Product from "@/app/models/Products";
 import { NextResponse } from "next/server";
 import { getSession } from "@/app/lib/getSession";
 import { User } from "@/app/models/User";
+import { redirect } from "next/navigation";
 
 const UserFind = async () => {
   const { user } = await getSession();
@@ -21,16 +22,14 @@ cloudinary.config({
 
 export const config = {
   api: {
-    bodyParser: false, 
+    bodyParser: false,
   },
 };
-
 
 const fileToBuffer = async (file) => {
   const arrayBuffer = await file.arrayBuffer();
   return Buffer.from(arrayBuffer);
 };
-
 
 const uploadImageToCloudinary = (buffer) => {
   return new Promise((resolve, reject) => {
@@ -47,20 +46,19 @@ const uploadImageToCloudinary = (buffer) => {
         }
       }
     );
-    stream.end(buffer); 
+    stream.end(buffer);
   });
 };
 
 export async function POST(req) {
   try {
-    console.log("From route js");
 
     const formData = await req.formData();
     const productName = formData.get("productName");
     const price = formData.get("price");
     const description = formData.get("description");
     const address = formData.get("address");
-    const image = formData.get("image"); 
+    const image = formData.get("image");
 
     if (!image) {
       return NextResponse.json(
@@ -69,31 +67,25 @@ export async function POST(req) {
       );
     }
 
-    
     const buffer = await fileToBuffer(image);
 
-    
     const result = await uploadImageToCloudinary(buffer);
-    console.log("secure_url", result.secure_url);
 
-    
     await connectDB();
     const user = await UserFind();
-    console.log("session in uplload", user);
-    // const date=new Date();
-    
 
-    
+    // const date=new Date();
+
     const product = await Product.create({
       name: productName,
-      price: parseFloat(price), 
+      price: parseFloat(price),
       description: description,
       imageUrl: result.secure_url,
       imageId: result.public_id,
       seller: {
-        name: user.username, 
-        email: user.email, 
-        address: address, 
+        name: user.username,
+        email: user.email,
+        address: address,
       },
       createdAt: new Date().toLocaleDateString("en-US", {
         month: "long",
