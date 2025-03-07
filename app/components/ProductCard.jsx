@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Button from "../elements/Button";
 import Image from "next/image";
 import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
 
 const ProductCard = ({ product, ishome }) => {
+  const [check, setcheck] = useState(false);
+  const [show, setshow] = useState(false);
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/products/${product._id}`, {
@@ -24,7 +26,6 @@ const ProductCard = ({ product, ishome }) => {
   };
 
   return (
-    <Link href={`/products/${product._id}`} passHref>
     <div
       key={product._id}
       className="startup-card w-[350px] flex flex-col h-[490px] group"
@@ -34,26 +35,42 @@ const ProductCard = ({ product, ishome }) => {
         {ishome == "False" && (
           <FaTrash
             className="text-lg hover:cursor-pointer text-red-600"
-            onClick={handleDelete}
+            onClick={() => setshow(true)}
           />
         )}
       </div>
-      <p className="text-16-medium pt-[20px]">{product.seller.name}</p>
-      <p className="text-26-semibold capitalize line-clamp-1">{product.name}</p>
-      <p className="startup-card_desc">{product.description}</p>
-      <Image
-        src={product.imageUrl}
-        width={150}
-        height={150}
-        alt="Product"
-        className="w-[350px] h-[200px] object-cover max-w-[100%] rounded-lg pt-[5px]"
-      />
-      <div className="flex justify-between items-center pt-[15px] ">
-        <p className="font-semibold text-2xl">₹{product.price}</p>
-        <Button label="Add To Cart" rounded />
+      <div>
+        {show && (
+          <div className="absolute top-0 left-0 w-[350px] h-[490px] bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-5 rounded-lg">
+              <p className="text-2xl">Are you sure you want to delete?</p>
+              <div className="flex justify-between items-center pt-[20px]">
+                <Button label="Cancel"  onClick={() => setshow(false)} />
+                <button label="Delete" onClick={handleDelete} >Delete</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+      <p className="text-16-medium pt-[20px]">{product.seller.name}</p>
+      <Link href={`/products/${product._id}`} passHref>
+        <p className="text-26-semibold capitalize line-clamp-1">
+          {product.name}
+        </p>
+        <p className="startup-card_desc">{product.description}</p>
+        <Image
+          src={product.imageUrl}
+          width={150}
+          height={150}
+          alt="Product"
+          className="w-[350px] h-[200px] object-cover max-w-[100%] rounded-lg pt-[5px]"
+        />
+        <div className="flex justify-between items-center pt-[15px] ">
+          <p className="font-semibold text-2xl">₹{product.price}</p>
+          <Button label="Add To Cart" rounded />
+        </div>
+      </Link>
     </div>
-    </Link>
   );
 };
 

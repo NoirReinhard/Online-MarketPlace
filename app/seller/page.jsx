@@ -18,18 +18,23 @@ const seller = async () => {
       const dateObj = new Date(product.createdAt);
     }
   }
-  const products = await Product.find().sort({ dateobj: -1, _id: -1 }).lean();
+  console.log(user.email,"email........");
+  
+  const products = await Product.find({ "seller.email": user.email })
+    .sort({ dateobj: -1, _id: -1 })
+    .lean();
   const serializedProducts = products.map((product) => ({
     ...product,
     _id: product._id.toString(), // Convert ObjectId to string
   }));
+  console.log(serializedProducts);
   return (
     <>
       <div className="sm:px-16 px-8 sm:py-10 pb-12 card_grid gap-5">
-        {serializedProducts.map((product,i) => (
-         <ProductCard key={i} product={product} ishome="False"/>
+        {serializedProducts.map((product, i) => (
+          <ProductCard key={i} product={product} ishome="False" />
         ))}
-      </div>      
+      </div>
     </>
   );
 };

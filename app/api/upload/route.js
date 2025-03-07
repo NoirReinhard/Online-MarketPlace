@@ -4,8 +4,6 @@ import Product from "@/app/models/Products";
 import { NextResponse } from "next/server";
 import { getSession } from "@/app/lib/getSession";
 import { User } from "@/app/models/User";
-import connectDB from "@/app/lib/db";
-import { redirect } from "next/navigation";
 
 const UserFind = async () => {
   const { user } = await getSession();
@@ -54,13 +52,17 @@ const uploadImageToCloudinary = (buffer) => {
 
 export async function POST(req) {
   try {
-
     const formData = await req.formData();
     const productName = formData.get("productName");
     const price = formData.get("price");
     const description = formData.get("description");
+    const quantity = formData.get("quantity");
+    const unit = formData.get("unit");
+    const stock = formData.get("stock");
     const address = formData.get("address");
     const image = formData.get("image");
+    const category = formData.get("category");
+    console.log("Formdata",formData);
 
     if (!image) {
       return NextResponse.json(
@@ -84,11 +86,15 @@ export async function POST(req) {
       description: description,
       imageUrl: result.secure_url,
       imageId: result.public_id,
+      quantity: parseInt(quantity),
+      unit: unit,
+      stock: parseInt(stock),
       seller: {
         name: user.username,
         email: user.email,
         address: address,
       },
+      category:category,
       createdAt: new Date().toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",

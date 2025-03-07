@@ -30,10 +30,13 @@ const page = async () => {
   }));
 
   return (
-    <div className="sm:px-16 px-8 sm:py-10 pb-12 card_grid gap-5">
-      {serializedProducts.map((product, i) => (
-        <ProductCard key={i} product={product} />
-      ))}
+    <div>
+      
+      <div className="sm:px-16 px-8 sm:py-10 pb-12 card_grid gap-5">
+        {serializedProducts.map((product, i) => (
+          <ProductCard key={i} product={product} />
+        ))}
+      </div>
     </div>
   );
 };

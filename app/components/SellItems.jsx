@@ -18,9 +18,12 @@ const sellItems = () => {
     formData.append("productName", e.target.productName.value);
     formData.append("price", e.target.price.value);
     formData.append("description", e.target.description.value);
+    formData.append("quantity", e.target.quantity.value);
+    formData.append("unit", e.target.unit.value);
+    formData.append("stock", e.target.stock.value);
     formData.append("address", e.target.address.value);
+    formData.append("category", e.target.category.value);
 
-    
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
@@ -29,7 +32,6 @@ const sellItems = () => {
 
       const data = await res.json();
       if (data) {
-        // If the product upload is successful, redirect to the seller page
         router.push("/seller");
       } else {
         alert(data.error || "Failed to upload product");
@@ -72,35 +74,91 @@ const sellItems = () => {
                 placeholder="Enter Price"
               />
             </div>
+            <div>
+              <label htmlFor="category" className="block font-semibold">
+                Categoroy
+              </label>
+              <select
+                className="border-formborder border my-5 pt-3 rounded-sm pl-2 py-1.5 px-3"
+                name="category"
+                id="category"
+                required
+              >
+                <option value="fruit">Fruit</option>
+                <option value="vegetable">Vegetable</option>
+                <option value="dairy">Dairy</option>
+                <option value="bakery">Bakery</option>
+                <option value="pulse">Pulse</option>
+                <option value="nuts">Nuts</option>
+              </select>
+            </div>
           </div>
           <div>
             <label htmlFor="description" className="block font-semibold">
               Description
             </label>
-            <input
+            <textarea
               type="text"
               id="description"
               name="description"
-              className="border-formborder border my-5 w-full pt-3 rounded-sm pl-2 py-1.5"
+              rows="5"
+              className="border-formborder border my-3 w-full pt-3 rounded-sm pl-2 py-1.5"
               placeholder="Enter the description of the product you are selling"
             />
           </div>
-
-          <div>
-            <label
-              htmlFor="image"
-              className="block my-5 rounded-sm font-semibold"
-            >
-              Address
-            </label>
-            <textarea
-              name="address"
-              id="address"
-              rows="5"
-              className="border-formborder border my-3 w-full pt-3 rounded-sm pl-2 py-1.5"
-              placeholder="Enter Your Address"
+          <label
+            htmlFor="address"
+            className="block my-5 rounded-sm font-semibold"
+          >
+            Quantity
+          </label>
+          <div className="flex gap-5 mt-2">
+            <input
+              name="quantity"
+              id="quantity"
+              className="border-formborder border w-[30%] my-1 py-0  rounded-sm pl-2 h-10"
+              placeholder="Enter Quantity"
             />
+            <select
+              className="border-formborder border w-[20%] my-1 py-2  rounded-sm pl-2 h-10"
+              name="unit"
+              id="role"
+              required
+            >
+              <option value="kg">Kg</option>
+              <option value="gm">Gm</option>
+              <option value="ltr">Ltr</option>
+              <option value="ml">Ml</option>
+              <option value="pcs">Pcs</option>
+              <option value="pack">Pack</option>
+              <option value="bottle">Bottle</option>
+            </select>
           </div>
+          <label
+            htmlFor="quantity"
+            className="block my-5 rounded-sm font-semibold"
+          >
+            Stock
+          </label>
+          <input
+            name="stock"
+            id="stock"
+            className="border-formborder border w-[30%] my-1 py-2  rounded-sm pl-2 "
+            placeholder="Enter Your Available Stock"
+          />
+
+          <label
+            htmlFor="address"
+            className="block my-5 rounded-sm font-semibold"
+          >
+            Address
+          </label>
+          <input
+            name="address"
+            id="address"
+            className="border-formborder border my-1 w-full pt-2 rounded-sm pl-2 py-1.5"
+            placeholder="Enter Your Address"
+          />
 
           <div>
             <label

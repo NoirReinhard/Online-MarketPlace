@@ -13,9 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Noir",
+  title: "Tensai Trade",
   description:
     "An Online Marketplace where you can sell and buy the groceries you want ",
+    icons: {
+      icon: "/assets/favicon.png", 
+    },
 };
 
 export default function RootLayout({ children }) {

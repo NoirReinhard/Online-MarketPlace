@@ -9,14 +9,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Logo, nav } from "../constants";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 const Navbar = () => {
   const { data: session } = useSession();
   const [toggle, setToggle] = useState(false);
   const [cart, setcart] = useState(false);
+  const [search, setSearch] = useState("");
 
   const handleSignOut = () => {
     signOut({
@@ -27,6 +29,14 @@ const Navbar = () => {
 
   const toggleNavigation = () => setToggle(!toggle);
   const cartNavigation = () => setcart(!cart);
+
+  const searchProduct = (e) => {
+    setSearch(e.target.value);
+  };
+
+  useEffect(() => {
+    console.log("Search Product", search);
+  }, [search]);
 
   return (
     <>
@@ -43,26 +53,40 @@ const Navbar = () => {
           icon={faBars}
           width={24}
           height={24}
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer md:hidden"
         />
+        <div className="flex items-end">
+          <Image src="/assets/Logo2.png" alt="Logo" width={40} height={40} />
+          <h4 className="text-3xl font-semibold">
+            <span className="text-primary">Ten</span>sai Tra
+            <span className="text-primary">de</span>
+          </h4>
+        </div>
 
         <div className="flex items-center border border-gray-600 rounded-md px-3 py-2 w-full max-w-md">
           <input
             type="text"
             placeholder="Search Products"
             className="flex-1 bg-transparent focus:outline-none"
+            onChange={(e) => searchProduct(e)}
           />
           <FontAwesomeIcon icon={faMagnifyingGlass} width={20} height={20} />
         </div>
 
         <div className="flex gap-5 items-center">
-          <FontAwesomeIcon icon={faUser} width={24} height={24} />
-          <FontAwesomeIcon
-            icon={faCartPlus}
-            width={24}
-            height={24}
-            onClick={cartNavigation}
-          />
+          <div className="flex items-center font-semibold text-lg gap-1">
+            <FontAwesomeIcon icon={faUser} width={24} height={24} />
+            <p className=" text-primary">User</p>
+          </div>
+          <div className="flex items-center font-semibold text-lg gap-1">
+            <FontAwesomeIcon
+              icon={faCartPlus}
+              width={24}
+              height={24}
+              onClick={cartNavigation}
+            />
+            <p className=" text-primary">Cart</p>
+          </div>
           {session ? (
             <>
               <FontAwesomeIcon

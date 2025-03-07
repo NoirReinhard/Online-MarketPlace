@@ -23,6 +23,26 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Cloudinary image ID is required"],
   },
+  quantity: {
+    type: Number,
+    required: [true, "Quantity is required"],
+    min: [0, "Quantity cannot be negative"],
+  },
+  unit: {
+    type: String,
+    required: [true, "Unit is required"],
+    enum: ["gm", "kg", "ml", "ltr", "pcs", "pack", "bottle"],
+  },
+  category: {
+    type: String,
+    required: [true, "Category is Required"],
+    enum:["fruit","bakery","dairy","vegetable","nuts","pulse"]
+  },
+  stock: {
+    type: Number,
+    required: [true, "Full quantity is required"],
+    min: [0, "Full quantity cannot be negative"],
+  },
   seller: {
     name: {
       type: String,
