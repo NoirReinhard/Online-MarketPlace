@@ -4,8 +4,11 @@ import Button from "../elements/Button";
 import Image from "next/image";
 import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
+import { useCart } from "@/app/components/CartContext";
+import CartActions from "@/app/components/CartActions";
 
 const ProductCard = ({ product, ishome }) => {
+  const { addToCart } = useCart();
   const [check, setcheck] = useState(false);
   const [show, setshow] = useState(false);
   const handleDelete = async () => {
@@ -67,7 +70,7 @@ const ProductCard = ({ product, ishome }) => {
         />
         <div className="flex justify-between items-center pt-[15px] ">
           <p className="font-semibold text-2xl">₹{product.price}</p>
-          <Button label="Add To Cart" rounded />
+          <CartActions product={product} /> 
         </div>
       </Link>
     </div>

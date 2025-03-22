@@ -13,11 +13,13 @@ import { useState, useEffect } from "react";
 import { Logo, nav } from "../constants";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useCart } from "./CartContext";
 
 const Navbar = () => {
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const { data: session } = useSession();
   const [toggle, setToggle] = useState(false);
-  const [cart, setcart] = useState(false);
+  const [scart, setcart] = useState(false);
   const [search, setSearch] = useState("");
 
   const handleSignOut = () => {
@@ -28,7 +30,7 @@ const Navbar = () => {
   };
 
   const toggleNavigation = () => setToggle(!toggle);
-  const cartNavigation = () => setcart(!cart);
+  const cartNavigation = () => setcart(!scart);
 
   const searchProduct = (e) => {
     setSearch(e.target.value);
@@ -40,7 +42,7 @@ const Navbar = () => {
 
   return (
     <>
-      {(toggle || cart) && (
+      {(toggle || scart) && (
         <div
           className="fixed bg-black opacity-70 z-50 h-full w-full top-0 left-0"
           onClick={toggleNavigation}
@@ -113,7 +115,7 @@ const Navbar = () => {
       {/*Cart*/}
       <div
         className={`${
-          cart ? "right-0" : "-right-full"
+          scart ? "right-0" : "-right-full"
         } w-80 fixed bg-white px-5 py-4 h-full top-0 z-50 transition-all duration-300 ease-in-out`}
       >
         <div className="flex justify-between items-center">
@@ -126,28 +128,26 @@ const Navbar = () => {
         </div>
 
         {/* Navigation items */}
-        <ul className="mt-4 space-y-3">
-          {nav.map((item, index) => (
-            <li
-              key={index}
-              className="py-3 px-4 border rounded-md flex justify-between items-center hover:bg-gray-100"
-            >
-              {item.title}
-              {item.icon}
-            </li>
-          ))}
-        </ul>
-
-        <ul className="mt-6 flex items-center justify-center gap-4">
-          {Logo.map((item, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-center py-2 px-3 bg-slate-400 rounded-md h-8 hover:bg-slate-500 hover:cursor-pointer"
-            >
-              {item.logo}
-            </li>
-          ))}
-        </ul>
+        <h2>Your Cart</h2>
+        {cart.length === 0 ? (
+          <p>Cart is empty</p>
+        ) : (
+          cart.map((item) => (
+            <div key={item.id}>
+              <h3>{item.name}</h3>
+              <p>Price: {item.price}</p>
+              <input
+                type="number"
+                value={item.quantity}
+                onChange={(e) =>
+                  updateQuantity(item.id, parseInt(e.target.value))
+                }
+              />
+              <button onClick={() => removeFromCart(item.id)}>Remove</button>
+            </div>
+          ))
+        )}
+        {cart.length > 0 && <button onClick={clearCart}>Clear Cart</button>}
       </div>
       <div
         className={`${
