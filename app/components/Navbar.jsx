@@ -14,6 +14,7 @@ import { Logo, nav } from "../constants";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCart } from "./CartContext";
+import Button from "../elements/Button";
 
 const Navbar = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -21,6 +22,9 @@ const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const [scart, setcart] = useState(false);
   const [search, setSearch] = useState("");
+  const [price, setPrice] = useState(0);
+  const [deliveryCost, setDeliveryCost] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const handleSignOut = () => {
     signOut({
@@ -39,6 +43,19 @@ const Navbar = () => {
   useEffect(() => {
     console.log("Search Product", search);
   }, [search]);
+
+  useEffect(() => {
+    const subtotal = cart.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    setPrice(subtotal);
+
+    const delivery = subtotal * 0.1;
+    setDeliveryCost(delivery);
+
+    setTotal(subtotal + delivery);
+  }, [cart]);
 
   return (
     <>
@@ -128,26 +145,100 @@ const Navbar = () => {
         </div>
 
         {/* Navigation items */}
-        <h2>Your Cart</h2>
         {cart.length === 0 ? (
           <p>Cart is empty</p>
         ) : (
-          cart.map((item) => (
-            <div key={item._id}>
-              <h3>{item.name}</h3>
-              <p>Price: {item.price}</p>
-              <input
-                type="number"
-                value={item.quantity}
-                onChange={(e) =>
-                  updateQuantity(item._id, parseInt(e.target.value))
-                }
-              />
-              <button onClick={() => removeFromCart(item._id)}>Remove</button>
+          <>
+            <div className="flex flex-col justify-between h-[80vh]">
+              <div className="overflow-y-auto scrollbar-hidden">
+                {cart.map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex justify-between items-center border width-full rounded-md py-2 mt-5 px-4"
+                  >
+                    <Image
+                      src={item.imageUrl}
+                      width={50}
+                      height={50}
+                      alt={item.name}
+                    />
+                    <div>
+                      <h3 className="text-gray-500 text-lg">{item.name}</h3>
+                      <p className="text-md mt-2">
+                        <span className="font-semibold text-lg text-gray-600">
+                          ₹{item.price}.00
+                        </span>{" "}
+                        x {item.quantity} {item.unit}
+                      </p>
+                      <div className="flex justify-around border text-lg text-gray-500 mt-2">
+                        <button
+                          onClick={() =>
+                            updateQuantity(
+                              item._id,
+                              item.quantity > 1
+                                ? item.quantity - 1
+                                : item.quantity
+                            )
+                          }
+                        >
+                          -
+                        </button>
+                        <p>{item.quantity}</p>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item._id, item.quantity + 1)
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <FontAwesomeIcon
+                      icon={faTimes}
+                      className="hover:cursor-pointer text-md self-start text-red-500"
+                      onClick={() => removeFromCart(item._id)}
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Subtotal, Delivery Cost, and Total */}
+              <div className="border-t z-100">
+                <div className="flex justify-between items-center mt-5">
+                  <p className="text-gray-500 font-semibold">Sub-Total:</p>
+                  <p className="text-gray-600 font-bold">₹{price.toFixed(2)}</p>
+                </div>
+                <div className="flex justify-between items-center mt-5">
+                  <p className="text-gray-500 font-semibold">
+                    Delivery-Cost(10%):
+                  </p>
+                  <p className="text-gray-600 font-bold">
+                    ₹{deliveryCost.toFixed(2)}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center mt-5">
+                  <p className="text-gray-500 font-semibold">Total:</p>
+                  <p className="text-gray-600 font-bold">₹{total.toFixed(2)}</p>
+                </div>
+              </div>
             </div>
-          ))
+          </>
         )}
-        {cart.length > 0 && <button onClick={clearCart}>Clear Cart</button>}
+        {cart.length > 0 && (
+          <div className="flex mt-3 justify-around">
+            <Button
+              className="font-bold py-2 px-7"
+              backColor="bg-gray-600"
+              color="text-white"
+              label="View Cart"
+            />{" "}
+            <Button
+              className="font-bold py-2 px-7"
+              backColor="bg-button_color"
+              color="text-white"
+              label="Checkout"
+            />
+          </div>
+        )}
       </div>
       <div
         className={`${

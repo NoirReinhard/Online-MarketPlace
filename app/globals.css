@@ -9,6 +9,15 @@
   scroll-behavior: smooth;
 }
 
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari */
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
 @layer utilities {
   .text-16-medium {
     @apply font-medium text-[16px] text-black;
