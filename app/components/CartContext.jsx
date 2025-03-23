@@ -19,11 +19,14 @@ export const CartProvider = ({ children }) => {
 
   // Add
   const addToCart = (product) => {
+    console.log(product._id+"Sine nehdn");  
+    
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
+      console.log(prevCart,"PREVIOUS CART");      
+      const existingItem = prevCart.find((item) => item._id === product._id);
       if (existingItem) {
         return prevCart.map((item) =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -35,13 +38,13 @@ export const CartProvider = ({ children }) => {
 
   // Remove 
   const removeFromCart = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    setCart((prevCart) => prevCart.filter((item) => item._id !== id));
   };
 
   // Update 
   const updateQuantity = (id, quantity) => {
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevCart.map((item) => (item._id === id ? { ...item, quantity } : item))
     );
   };
 

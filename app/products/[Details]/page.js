@@ -8,40 +8,52 @@ import CartActions from "@/app/components/CartActions";
 const route = async ({ params }) => {
   const { Details } = await params;
   await connectDB();
-  const products = await Product.findById(Details);  
-  const plain_product = await Product.findById(Details).lean();
+  const product = await Product.findById(Details).lean();
+
+  // Serialize by converting ObjectId and Date to string
+  const plain_product = JSON.parse(
+    JSON.stringify({
+      ...product,
+      _id: product._id.toString(),                  // Convert ObjectId to string
+      seller: {
+        ...product.seller,
+        _id: product.seller._id?.toString()         // Convert seller ID to string (if it exists)
+      }
+    })
+  );
+
   return (
     <div>      
       <div className="bg-primary flex justify-center h-[200px] flex-col items-center gap-4">
         <p className="bg-gold w-max py-2 px-5 rounded-md font-bold uppercase">
-          {products.createdAt}
+          {plain_product.createdAt}
         </p>
         <h1 className="text-6xl font-bold uppercase bg-black text-white py-2 px-5">
-          {products.name}
+          {plain_product.name}
         </h1>
       </div>
       <div className="sm:px-16 px-8 sm:py-10 pb-12 flex gap-[50px] items-center">
         <div>
           <Image
-            src={products.imageUrl}
-            alt={products.name}
+            src={plain_product.imageUrl}
+            alt={plain_product.name}
             height={550}
             width={650}
             className="rounded border-solid border-[5px] border-formborder h-[420px] w-[470px] object-cover"
           ></Image>
         </div>
         <div className="mt-[20px] flex flex-col gap-4">
-          <p className="font-bold text-2xl">{products.seller.name}</p>
+          <p className="font-bold text-2xl">{plain_product.seller.name}</p>
           <p className="font-semibold text-sm mt-[-12px] text-gray-500">
-            {products.seller.email}
+            {plain_product.seller.email}
           </p>
           <p className="font-semibold text-lg w-[300px]">
-            {products.description}
+            {plain_product.description}
           </p>
-          <p className="font-bold text-2xl">₹{products.price}</p>
+          <p className="font-bold text-2xl">₹{plain_product.price}</p>
           <p className="font-semibold text-lg">
-            Quantity:{products.quantity}
-            {products.unit}
+            Quantity:{plain_product.quantity}
+            {plain_product.unit}
           </p>
           <div className="flex gap-4 items-center">
           <CartActions product={plain_product} />

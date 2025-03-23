@@ -133,17 +133,17 @@ const Navbar = () => {
           <p>Cart is empty</p>
         ) : (
           cart.map((item) => (
-            <div key={item.id}>
+            <div key={item._id}>
               <h3>{item.name}</h3>
               <p>Price: {item.price}</p>
               <input
                 type="number"
                 value={item.quantity}
                 onChange={(e) =>
-                  updateQuantity(item.id, parseInt(e.target.value))
+                  updateQuantity(item._id, parseInt(e.target.value))
                 }
               />
-              <button onClick={() => removeFromCart(item.id)}>Remove</button>
+              <button onClick={() => removeFromCart(item._id)}>Remove</button>
             </div>
           ))
         )}

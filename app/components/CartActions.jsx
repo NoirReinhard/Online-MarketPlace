@@ -7,7 +7,7 @@ const CartActions = ({ product }) => {
   return (
     <button 
       onClick={() => addToCart(product)}
-      className="bg-blue-500 text-white px-4 py-2 rounded"
+      className="border-formborder border py-1  px-4 bg-button_color text-white  font-semibold rounded-md"
     >
       Add to Cart
     </button>
