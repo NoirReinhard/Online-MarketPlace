@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCart } from "./CartContext";
 import Button from "../elements/Button";
+import Link from "next/link";
 
 const Navbar = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -74,22 +75,26 @@ const Navbar = () => {
           height={24}
           className="hover:cursor-pointer md:hidden"
         />
-        <div className="flex items-end">
-          <Image src="/assets/Logo2.png" alt="Logo" width={40} height={40} />
-          <h4 className="text-3xl font-semibold">
-            <span className="text-primary">Ten</span>sai Tra
-            <span className="text-primary">de</span>
-          </h4>
-        </div>
+        <Link href="/">
+          <div className="flex items-end">
+            <Image src="/assets/Logo2.png" alt="Logo" width={40} height={40} />
+            <h4 className="text-3xl font-semibold">
+              <span className="text-primary">Ten</span>sai Tra
+              <span className="text-primary">de</span>
+            </h4>
+          </div>
+        </Link>
 
-        <div className="flex items-center border border-gray-600 rounded-md px-3 py-2 w-full max-w-md">
+        <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-full max-w-md">
           <input
             type="text"
             placeholder="Search Products"
             className="flex-1 bg-transparent focus:outline-none"
             onChange={(e) => searchProduct(e)}
           />
-          <FontAwesomeIcon icon={faMagnifyingGlass} width={20} height={20} />
+          <Link href={`/search/${search}`} passHref>
+            <FontAwesomeIcon icon={faMagnifyingGlass} width={20} height={20} className="bg-black text-white p-2 rounded-full"/>
+          </Link>
         </div>
 
         <div className="flex gap-5 items-center">
@@ -158,9 +163,10 @@ const Navbar = () => {
                   >
                     <Image
                       src={item.imageUrl}
-                      width={50}
-                      height={50}
+                      width={75}
+                      height={85}
                       alt={item.name}
+                      className="rounded-md"
                     />
                     <div>
                       <h3 className="text-gray-500 text-lg">{item.name}</h3>
@@ -231,12 +237,12 @@ const Navbar = () => {
               color="text-white"
               label="View Cart"
             />{" "}
-            <Button
-              className="font-bold py-2 px-7"
-              backColor="bg-button_color"
-              color="text-white"
-              label="Checkout"
-            />
+            <button
+              className="font-bold py-2 px-7 bg-button_color rounded-md text-white"
+              onClick={() => clearCart()}
+            >
+              Clear Cart
+            </button>
           </div>
         )}
       </div>
