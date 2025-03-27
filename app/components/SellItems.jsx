@@ -87,6 +87,8 @@ const sellItems = () => {
                 <option value="fruit">Fruit</option>
                 <option value="vegetable">Vegetable</option>
                 <option value="dairy">Dairy</option>
+                <option value="beverages">Beverages</option>
+                <option value="spices">Spices</option>
                 <option value="bakery">Bakery</option>
                 <option value="pulse">Pulse</option>
                 <option value="nuts">Nuts</option>

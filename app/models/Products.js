@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, "Category is Required"],
-    enum:["fruit","bakery","dairy","vegetable","nuts","pulse"]
+    enum:["fruit","bakery","dairy","vegetable","nuts","pulse","beverages","spices"]
   },
   stock: {
     type: Number,

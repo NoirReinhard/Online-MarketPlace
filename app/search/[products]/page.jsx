@@ -5,9 +5,15 @@ import React from "react";
 const page = async ({ params }) => {
   const { products } = await params;
   const product_name = decodeURIComponent(products).trim();
-  const product = await Product.find({
+  var product;
+  if(product_name=="bakery" || product_name=="dairy" || product_name=="fruit" || product_name=="vegetable" ||  product_name=="beverages" || product_name=="spices" || product_name=="nuts" || product_name=="pulse"){
+  product=await Product.find({category:product_name}).lean();
+}
+else{
+  product = await Product.find({
     name: { $regex: product_name, $options: "i" },
   }).lean();
+}
   const serializedProducts = product.map((product) => ({
     ...product,
     _id: product._id.toString(), // Convert ObjectId to string

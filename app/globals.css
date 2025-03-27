@@ -28,6 +28,9 @@
   .padding {
     @apply sm:px-16 px-8 sm:py-16 py-12;
   }
+  .category-list{
+    @apply flex gap-2 items-center hover:bg-gray-200 bg-white text-black py-1 px-2;    
+  }
   .padding-l {
     @apply sm:pl-16 pl-8;
   }
