@@ -8,7 +8,8 @@ import connectDB from "./lib/db";
 import { faAngleDown, faList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import Slider from "./components/Slider";               
+import Slider from "./components/Slider";
+import { filter } from "./constants";
 
 const page = async () => {
   const session = await getSession();
@@ -45,64 +46,18 @@ const page = async () => {
             </p>
 
             {/* Dropdown Menu */}
+
             <div className="absolute hidden group-hover:block mt-2 w-[200px] py-2 px-2 rounded-md shadow-md z-40 bg-white">
               <ul className="bg-[#f8f8fb] rounded-md py-2 px-2 z-40 flex flex-col gap-2 h-[180px] w-max flex-wrap">
-                <div className="category-list">
-                  <Link href={`/search/bakery`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🍪 Bakery
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/dairy`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🥛 Dairy
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/vegetable`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🥕 Vegetables
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/beverages`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🍹 Beverages
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/spices`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🌶 Spices
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/nuts`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🥜 Nuts
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/pulse`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🌱 Pulses
-                    </li>
-                  </Link>
-                </div>
-                <div className="category-list">
-                  <Link href={`/search/fruit`} passHref>
-                    <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
-                      🥭 Fruits
-                    </li>
-                  </Link>
-                </div>
+                {filter.map((item, i) => (
+                  <div className="category-list" key={i}>
+                    <Link href={item.link} passHref>
+                      <li className="cursor-pointer hover:bg-gray-200 rounded-md p-2">
+                        {item.icon} {item.title}
+                      </li>
+                    </Link>
+                  </div>
+                ))}
               </ul>
             </div>
           </div>

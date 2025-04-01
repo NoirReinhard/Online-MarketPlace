@@ -31,7 +31,7 @@ const ProductCard = ({ product, ishome }) => {
   return (
     <div
       key={product._id}
-      className="startup-card w-[350px] flex flex-col h-[490px] group"
+      className="startup-card md:w-[370px] max-[825px]:w-[300px] flex flex-col h-[370px] w-[250px] md:h-[490px] group"
     >
       <div className="flex justify-between items-center">
         <p>{product.createdAt}</p>
@@ -48,16 +48,20 @@ const ProductCard = ({ product, ishome }) => {
             <div className="bg-white p-5 rounded-lg">
               <p className="text-2xl">Are you sure you want to delete?</p>
               <div className="flex justify-between items-center pt-[20px]">
-                <Button label="Cancel"  onClick={() => setshow(false)} />
-                <button label="Delete" onClick={handleDelete} >Delete</button>
+                <Button label="Cancel" onClick={() => setshow(false)} />
+                <button label="Delete" onClick={handleDelete}>
+                  Delete
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
-      <p className="text-16-medium pt-[20px]">{product.seller.name}</p>
+      <p className="text-16-medium md:pt-[20px] sm:pt-[8px]">
+        {product.seller.name}
+      </p>
       <Link href={`/products/${product._id}`} passHref>
-        <p className="text-26-semibold capitalize line-clamp-1">
+        <p className="text-26-semibold  capitalize line-clamp-1">
           {product.name}
         </p>
         <p className="startup-card_desc">{product.description}</p>
@@ -66,13 +70,13 @@ const ProductCard = ({ product, ishome }) => {
           width={150}
           height={150}
           alt="Product"
-          className="w-[350px] h-[200px] object-cover max-w-[100%] rounded-lg pt-[5px]"
+          className="w-[350px] md:h-[200px] h-[150px] object-cover max-w-[100%] rounded-lg pt-[5px]"
         />
+      </Link>
         <div className="flex justify-between items-center pt-[15px] ">
           <p className="font-semibold text-2xl">₹{product.price}</p>
-          <CartActions product={product} /> 
+          {!ishome && <CartActions product={product} />}
         </div>
-      </Link>
     </div>
   );
 };

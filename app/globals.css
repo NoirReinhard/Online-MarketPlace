@@ -23,7 +23,7 @@
     @apply font-medium text-[16px] text-black;
   }
   .text-26-semibold {
-    @apply font-semibold text-[26px] text-black;
+    @apply font-semibold md:text-[26px] text-[20px] text-black;
   }
   .padding {
     @apply sm:px-16 px-8 sm:py-16 py-12;
@@ -42,10 +42,10 @@
     @apply sm:pb-24 pb-12;
   }
   .startup-card_desc {
-    @apply font-normal text-[16px] line-clamp-2 my-3 break-all;
+    @apply font-normal text-[16px] md:line-clamp-2 md:my-3 sm:my-1 break-all line-clamp-1;
   }
   .card_grid {
-    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5;
+    @apply grid lg:grid-cols-3 md:gap-5 gap-2 max-[740px]:grid-cols-1 max-[740px]:pl-12 max-[1024px]:grid-cols-2;
   }
   .startup-card {
     @apply bg-white border-[5px] border-r-[10px] border-b-[10px] border-black py-6 px-5 rounded-[22px]  transition-all duration-500 hover:bg-primary-100 hover:border-primary;

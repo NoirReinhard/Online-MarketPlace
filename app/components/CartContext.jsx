@@ -6,18 +6,17 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // Load cart from localStorage on mount
+ 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
   }, []);
 
-  // Save cart to localStorage whenever it changes
+ 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Add
   const addToCart = (product) => {
     console.log(product._id+"Sine nehdn");  
     
@@ -36,12 +35,10 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // Remove 
   const removeFromCart = (id) => {
     setCart((prevCart) => prevCart.filter((item) => item._id !== id));
   };
 
-  // Update 
   const updateQuantity = (id, quantity) => {
     
     setCart((prevCart) =>
@@ -49,7 +46,6 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  // Clear
   const clearCart = () => {
     setCart([]);
   };

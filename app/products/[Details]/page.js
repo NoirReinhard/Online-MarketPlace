@@ -1,29 +1,32 @@
-import Button from "@/app/elements/Button";
 import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
 import Image from "next/image";
 import React from "react";
 import CartActions from "@/app/components/CartActions";
+import { getSession } from "@/app/lib/getSession";
 
 const route = async ({ params }) => {
   const { Details } = await params;
   await connectDB();
   const product = await Product.findById(Details).lean();
+  const session = await getSession();
+  const isSeller = session.user.role;
+  console.log(isSeller,"sellllllllller");
+  
 
-  // Serialize by converting ObjectId and Date to string
   const plain_product = JSON.parse(
     JSON.stringify({
       ...product,
-      _id: product._id.toString(),                  // Convert ObjectId to string
+      _id: product._id.toString(),
       seller: {
         ...product.seller,
-        _id: product.seller._id?.toString()         // Convert seller ID to string (if it exists)
-      }
+        _id: product.seller._id?.toString(),
+      },
     })
   );
 
   return (
-    <div>      
+    <div>
       <div className="bg-primary flex justify-center h-[200px] flex-col items-center gap-4">
         <p className="bg-gold w-max py-2 px-5 rounded-md font-bold uppercase">
           {plain_product.createdAt}
@@ -56,7 +59,7 @@ const route = async ({ params }) => {
             {plain_product.unit}
           </p>
           <div className="flex gap-4 items-center">
-          <CartActions product={plain_product} />
+            {(isSeller == "buyer" || isSeller=="admin") && <CartActions product={plain_product} />}
           </div>
         </div>
       </div>

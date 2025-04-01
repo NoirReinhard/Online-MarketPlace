@@ -5,21 +5,8 @@ import "swiper/css/effect-creative";
 import "swiper/css/autoplay";
 import { Autoplay, EffectCreative } from "swiper/modules";
 import Image from "next/image";
+import { slides } from "../constants";
 
-const slides = [
-  {
-    id: 1,
-    image: "/assets/StrawberryPie.jpg",
-    title: "Fresh & Juicy Fruits",
-    text: "Taste the freshness in every bite.",
-  },
-  {
-    id: 2,
-    image: "/assets/Spices.jpeg",
-    title: "Organic Goodness",
-    text: "Nature’s best, delivered to you.",
-  },
-];
 
 export default function ShutterSlider() {
   return (
@@ -46,8 +33,8 @@ export default function ShutterSlider() {
             <Image
               src={slide.image}
               alt={slide.title}
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="w-full h-full rounded-xl"
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 rounded-xl flex flex-col justify-center items-center text-center">

@@ -14,8 +14,9 @@ import { Logo, nav } from "../constants";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCart } from "./CartContext";
-import Button from "../elements/Button";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const Button = dynamic(() => import("../elements/Button"), { ssr: false });
 
 const Navbar = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -26,6 +27,11 @@ const Navbar = () => {
   const [price, setPrice] = useState(0);
   const [deliveryCost, setDeliveryCost] = useState(0);
   const [total, setTotal] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSignOut = () => {
     signOut({
@@ -52,7 +58,7 @@ const Navbar = () => {
     );
     setPrice(subtotal);
 
-    const delivery = subtotal * 0.1;
+    const delivery = subtotal * 0.05;
     setDeliveryCost(delivery);
 
     setTotal(subtotal + delivery);
@@ -60,58 +66,70 @@ const Navbar = () => {
 
   return (
     <>
+    
       {(toggle || scart) && (
-        <div
-          className="fixed bg-black opacity-70 z-50 h-full w-full top-0 left-0"
-          onClick={toggleNavigation}
-        ></div>
+        <div className="fixed bg-black opacity-70 z-50 h-full w-full top-0 left-0"></div>
       )}
-
+  
       <div className="px-4 py-5 flex justify-between items-center bg-separate sticky top-0 z-40">
-        <FontAwesomeIcon
-          onClick={toggleNavigation}
-          icon={faBars}
-          width={24}
-          height={24}
-          className="hover:cursor-pointer md:hidden"
-        />
+        <div className="flex items-center gap-2 md:hidden">
+          <FontAwesomeIcon
+            onClick={toggleNavigation}
+            icon={faBars}
+            width={24}
+            height={24}
+            className="hover:cursor-pointer md:hidden"
+          />
+          <Link href="/">
+            <Image src="/assets/Logo2.png" alt="Logo" width={30} height={30} />
+          </Link>
+        </div>
         <Link href="/">
-          <div className="flex items-end">
+          <div className=" items-end hidden md:flex">
             <Image src="/assets/Logo2.png" alt="Logo" width={40} height={40} />
-            <h4 className="text-3xl font-semibold">
+            <h4 className="text-3xl font-semibold ">
               <span className="text-primary">Ten</span>sai Tra
               <span className="text-primary">de</span>
             </h4>
           </div>
         </Link>
 
-        <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-full max-w-md">
+        <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:wi[250px] max-md:font-semibold max-md:text-xs">
           <input
             type="text"
+            suppressHydrationWarning
             placeholder="Search Products"
             className="flex-1 bg-transparent focus:outline-none"
             onChange={(e) => searchProduct(e)}
           />
           <Link href={`/search/${search}`} passHref>
-            <FontAwesomeIcon icon={faMagnifyingGlass} width={20} height={20} className="bg-black text-white p-2 rounded-full"/>
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              width={20}
+              height={20}
+              className="bg-black text-white p-2 rounded-full max-md:p-1 "
+            />
           </Link>
         </div>
 
         <div className="flex gap-5 items-center">
-          <div className="flex items-center font-semibold text-lg gap-1">
-            <FontAwesomeIcon icon={faUser} width={24} height={24} />
-            <p className=" text-primary">User</p>
-          </div>
-          <div className="flex items-center font-semibold text-lg gap-1">
-            <FontAwesomeIcon
-              icon={faCartPlus}
-              width={24}
-              height={24}
-              onClick={cartNavigation}
-            />
-            <p className=" text-primary">Cart</p>
-          </div>
-          {session ? (
+          {mounted && (
+            <>
+              <div className="flex items-center font-semibold text-lg gap-1">
+                <FontAwesomeIcon icon={faUser} width={24} height={24} />
+                <p className=" text-primary max-lg:hidden">User</p>
+              </div>
+
+              <div
+                className="flex items-center font-semibold text-lg gap-1 hover:cursor-pointer"
+                onClick={cartNavigation}
+              >
+                <FontAwesomeIcon icon={faCartPlus} width={24} height={24} />
+                <p className=" text-primary max-lg:hidden">Cart</p>
+              </div>
+            </>
+          )}
+          {mounted && session ? (
             <>
               <FontAwesomeIcon
                 icon={faArrowRightFromBracket}
@@ -128,9 +146,11 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <button className="hidden md:block text-white bg-[#4b5966] rounded-full px-4 py-2">
-              Sign In
-            </button>
+            mounted && (
+              <button className="hidden md:block text-white bg-[#4b5966] rounded-full px-4 py-2">
+                Sign In
+              </button>
+            )
           )}
         </div>
       </div>
@@ -215,7 +235,7 @@ const Navbar = () => {
                 </div>
                 <div className="flex justify-between items-center mt-5">
                   <p className="text-gray-500 font-semibold">
-                    Delivery-Cost(10%):
+                    Delivery-Cost(5%):
                   </p>
                   <p className="text-gray-600 font-bold">
                     ₹{deliveryCost.toFixed(2)}
@@ -231,12 +251,14 @@ const Navbar = () => {
         )}
         {cart.length > 0 && (
           <div className="flex mt-3 justify-around">
-            <Button
-              className="font-bold py-2 px-7"
-              backColor="bg-gray-600"
-              color="text-white"
-              label="View Cart"
-            />{" "}
+            <a href="/cart">
+              <Button
+                className="font-bold py-2 px-7 hover:bg-button_color"
+                backColor="bg-gray-600"
+                color="text-white"
+                label="View Cart"
+              />
+            </a>
             <button
               className="font-bold py-2 px-7 bg-button_color rounded-md text-white"
               onClick={() => clearCart()}
