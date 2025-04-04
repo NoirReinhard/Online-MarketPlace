@@ -6,13 +6,13 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
+import order from "@/action/order";
 import convertToSubcurrency from "@/app/lib/convertToSubcurrency";
 import { useCart } from "../components/CartContext";
 
-
-const CheckoutPage = ({ amount }) => {
-const { clearCart } = useCart();
-
+const CheckoutPage = ({ amount, isValid, formData }) => {
+  console.log(formData, "formDataaaaaaa");
+  const { clearCart, cart } = useCart();
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState();
@@ -34,7 +34,12 @@ const { clearCart } = useCart();
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    clearCart();
+
+    if (!isValid) {
+      setErrorMessage("Please fill in all required fields before proceeding.");
+      setLoading(false);
+      return;
+    }
 
     if (!stripe || !elements) {
       return;
@@ -48,6 +53,9 @@ const { clearCart } = useCart();
       return;
     }
 
+    await order(formData, cart);
+    clearCart();
+
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret,
@@ -55,11 +63,6 @@ const { clearCart } = useCart();
         return_url: `http://localhost:3000/payment-success?amount=${amount}`,
       },
     });
-
-    if (error) {
-      setErrorMessage(error.message);
-    } else {
-    }
 
     setLoading(false);
   };
@@ -83,13 +86,17 @@ const { clearCart } = useCart();
     <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
       {clientSecret && <PaymentElement />}
 
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div className="text-red-500 my-2">{errorMessage}</div>}
 
       <button
-        disabled={!stripe || loading}
-        className="text-white w-full p-5 bg-black mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
+        disabled={!stripe || loading || !isValid}
+        className={`text-white w-full p-5 mt-2 rounded-md font-bold ${
+          !isValid
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-black hover:bg-gray-800"
+        } disabled:opacity-50 disabled:animate-pulse`}
       >
-        {!loading ? `Pay $${amount}` : "Processing..."}
+        {!loading ? `Pay ₹${amount.toFixed(2)}` : "Processing..."}
       </button>
     </form>
   );

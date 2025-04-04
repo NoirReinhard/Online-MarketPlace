@@ -66,11 +66,10 @@ const Navbar = () => {
 
   return (
     <>
-    
       {(toggle || scart) && (
         <div className="fixed bg-black opacity-70 z-50 h-full w-full top-0 left-0"></div>
       )}
-  
+
       <div className="px-4 py-5 flex justify-between items-center bg-separate sticky top-0 z-40">
         <div className="flex items-center gap-2 md:hidden">
           <FontAwesomeIcon
@@ -124,7 +123,12 @@ const Navbar = () => {
                 className="flex items-center font-semibold text-lg gap-1 hover:cursor-pointer"
                 onClick={cartNavigation}
               >
-                <FontAwesomeIcon icon={faCartPlus} width={24} height={24} />
+                <div className="relative">
+                  <p className="bg-button_color text-white px-1 text-xs rounded-full absolute top-[-3px] right-[-5px]">
+                    {cart.length}
+                  </p>
+                  <FontAwesomeIcon icon={faCartPlus} width={24} height={24} />
+                </div>
                 <p className=" text-primary max-lg:hidden">Cart</p>
               </div>
             </>

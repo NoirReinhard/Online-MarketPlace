@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { useCart } from "../components/CartContext";
 import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
@@ -9,7 +9,7 @@ const Page = () => {
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart } =
     useCart();
   const [total, setTotal] = useState(0);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const calculateTotal = () => {
     let totalAmount = 0;
@@ -125,8 +125,11 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-4 right-4 text-lg">
-          <p><span className="text-red-500">Note:</span> Delivery Cost is 5% of the Product Price</p>
+        <div className="absolute top-24 right-4 text-lg">
+          <p>
+            <span className="text-red-500">Note:</span> Delivery Cost is 5% of
+            the Product Price
+          </p>
         </div>
       </div>
     </>
