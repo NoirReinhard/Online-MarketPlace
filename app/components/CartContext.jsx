@@ -1,4 +1,5 @@
-"use client"
+"use client";
+import { toast } from "sonner";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
@@ -6,22 +7,17 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
- 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
   }, []);
 
- 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product) => {
-    console.log(product._id+"Sine nehdn");  
-    
     setCart((prevCart) => {
-      console.log(prevCart,"PREVIOUS CART");      
       const existingItem = prevCart.find((item) => item._id === product._id);
       if (existingItem) {
         return prevCart.map((item) =>
@@ -30,6 +26,10 @@ export const CartProvider = ({ children }) => {
             : item
         );
       } else {
+        toast.success("Added to cart", {
+          id: `added-${product._id}`,
+          description: `Product ${product.name} added to cart`,
+        });
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
@@ -40,7 +40,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (id, quantity) => {
-    
     setCart((prevCart) =>
       prevCart.map((item) => (item._id === id ? { ...item, quantity } : item))
     );

@@ -9,9 +9,9 @@ import {
 import order from "@/action/order";
 import convertToSubcurrency from "@/app/lib/convertToSubcurrency";
 import { useCart } from "../components/CartContext";
+import { toast } from "sonner";
 
 const CheckoutPage = ({ amount, isValid, formData }) => {
-  console.log(formData, "formDataaaaaaa");
   const { clearCart, cart } = useCart();
   const stripe = useStripe();
   const elements = useElements();
@@ -53,16 +53,23 @@ const CheckoutPage = ({ amount, isValid, formData }) => {
       return;
     }
 
-    await order(formData, cart);
-    clearCart();
+    const res = await order(formData, cart);
+    if (res.success == false) {
+      toast.error(res.message);
+      setLoading(false);
+    } else {
+      toast.success(res.message);
+      clearCart();
+      setLoading(false);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      clientSecret,
-      confirmParams: {
-        return_url: `http://localhost:3000/payment-success?amount=${amount}`,
-      },
-    });
+      const { error } = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: {
+          return_url: `http://localhost:3000/payment-success?amount=${amount}`,
+        },
+      });
+    }
 
     setLoading(false);
   };

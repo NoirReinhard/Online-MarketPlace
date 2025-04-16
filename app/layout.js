@@ -1,7 +1,8 @@
 import { Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import Providers from "./components/Providers"; // Import Providers
+import Providers from "./components/Providers";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <Navbar />
+          <Toaster richColors />
           {children}
         </Providers>
       </body>

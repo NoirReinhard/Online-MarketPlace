@@ -2,42 +2,59 @@
 
 import connectDB from "@/app/lib/db";
 import { User } from "@/app/models/User";
-import { redirect } from "next/navigation";
 import { hash } from "bcrypt";
 import { signIn } from "@/auth";
 
 const login = async (formData) => {
   const email = formData.get("email");
   const password = formData.get("password");
+
   await connectDB();
   const findRole = await User.findOne({ email });
+
   try {
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       redirect: false,
       callbackUrl: "/",
       email,
       password,
     });
+
+    if (!res || res.error) {
+      return { success: false, message: "Invalid Credentials" };
+    }
+
+    let redirectTo = "/";
+    if (findRole?.role === "admin") redirectTo = "/Dashboard";
+    else if (findRole?.role === "seller") redirectTo = "/seller";
+
+    return { success: true, redirect: redirectTo };
   } catch (error) {
-    const someError = error;
-    return someError.cause;
+    return { success: false, message: "Invalid Credentials" };
   }
-  if (findRole.role == "admin") redirect("/Dashboard");
-  else if (findRole.role == "seller") redirect("/seller");
-  else if (findRole.role == "buyer") redirect("/");
 };
+
 const register = async (formData) => {
   const username = formData.get("username");
   const password = formData.get("password");
   const email = formData.get("email");
   const role = formData.get("role");
-  if (!username || !password || !email) throw new Error("Fill All the Fields");
-  await connectDB();
 
+  if (!username || !password || !email) {
+    return { success: false, message: "Fill all the fields" };
+  }
+
+  await connectDB();
   const existinguser = await User.findOne({ email });
-  if (existinguser) throw new Error("User Already Exists");
+
+  if (existinguser) {
+    return { success: false, message: "User already exists" };
+  }
+
   const hashedPwd = await hash(password, 12);
   await User.create({ username, email, password: hashedPwd, role });
-  redirect("/Login");
+
+  return { success: true, redirect: "/Login" };
 };
+
 export { register, login };

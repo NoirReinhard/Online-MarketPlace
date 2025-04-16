@@ -1,13 +1,16 @@
 import { faHouse, faCarrot, faUser } from "@fortawesome/free-solid-svg-icons";
-import { faFacebook, faInstagram, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebook,
+  faInstagram,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const nav = [
   { title: "Home", icon: <FontAwesomeIcon icon={faHouse} /> },
   { title: "Products", icon: <FontAwesomeIcon icon={faCarrot} /> },
   { title: "About Us", icon: <FontAwesomeIcon icon={faUser} /> },
-  
 ];
-export const Logo=[
+export const Logo = [
   {
     logo: <FontAwesomeIcon icon={faFacebook} />,
   },
@@ -16,8 +19,8 @@ export const Logo=[
   },
   {
     logo: <FontAwesomeIcon icon={faInstagram} />,
-  }
-]
+  },
+];
 export const slides = [
   {
     id: 1,
@@ -32,37 +35,65 @@ export const slides = [
     text: "Nature’s best, delivered to you.",
   },
 ];
-export const filter=[
+export const filter = [
   {
-    title:"🍪 Bakery",
-    link:"/search/bakery"
+    title: "🍪 Bakery",
+    link: "/search/bakery",
   },
   {
-    title:"🥛 Dairy",
-    link:"/search/dairy"
+    title: "🥛 Dairy",
+    link: "/search/dairy",
   },
   {
-    title:"🥕 Vegetables",
-    link:"/search/vegetable"
+    title: "🥕 Vegetables",
+    link: "/search/vegetable",
   },
   {
-    title:"🍹 Beverages",
-    link:"/search/beverages"
+    title: "🍹 Beverages",
+    link: "/search/beverages",
   },
   {
-    title:"🌶 Spices",
-    link:"/search/spices"
+    title: "🌶 Spices",
+    link: "/search/spices",
   },
   {
-    title:"🥜 Nuts",
-    link:"/search/nuts"
+    title: "🥜 Nuts",
+    link: "/search/nuts",
   },
   {
-    title:"🌱 Pulses",
-    link:"/search/pulse"
+    title: "🌱 Pulses",
+    link: "/search/pulse",
   },
   {
-    title:"🥭 Fruits",
-    link:"/search/fruit"
-  }
-]
+    title: "🥭 Fruits",
+    link: "/search/fruit",
+  },
+];
+export const admincategories = [
+  {
+    status: "All",
+  },
+  {
+    status: "Pending",
+  },
+  {
+    status: "Shipped",
+  },
+  {
+    status: "Delivered",
+  },
+  {
+    status: "Cancelled",
+  },
+];
+export const banstatus = [
+  {
+    status: "All",
+  },
+  {
+    status: true,
+  },
+  {
+    status: false,
+  },
+];

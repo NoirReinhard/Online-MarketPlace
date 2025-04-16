@@ -21,17 +21,12 @@ const page = async () => {
     redirect("/Login");
   }
   await connectDB();
-  const products1 = await Product.find();
-  for (const product of products1) {
-    if (typeof product.createdAt === "string") {
-      const dateObj = new Date(product.createdAt);
-    }
-  }
-  // Fetch products and serialize the `_id` field
-  const products = await Product.find().sort({ dateobj: -1, _id: -1 }).lean();
+  const products = await Product.find({ isAvailable: true })
+    .sort({ dateobj: -1, _id: -1 })
+    .lean();
   const serializedProducts = products.map((product) => ({
     ...product,
-    _id: product._id.toString(), // Convert ObjectId to string
+    _id: product._id.toString(),
   }));
 
   return (

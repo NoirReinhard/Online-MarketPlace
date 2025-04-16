@@ -1,5 +1,3 @@
-import { FaTrash } from "react-icons/fa";
-import Link from "next/link";
 import { Order } from "../models/Order";
 import { getSession } from "../lib/getSession";
 

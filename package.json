@@ -20,6 +20,7 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.3",
     "dotenv": "^16.4.7",
+    "lucide-react": "^0.488.0",
     "mongoose": "^8.9.2",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
@@ -29,6 +30,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
+    "sonner": "^2.0.3",
     "stripe": "^17.7.0",
     "swiper": "^11.2.6",
     "swr": "^2.3.0"

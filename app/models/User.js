@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     enum: ["buyer", "seller", "admin"],
     default: "buyer"
   },
+  isBanned:{ type: Boolean, default: false },
   image: { type: String },
   authProviderId: { type: String }, 
 });

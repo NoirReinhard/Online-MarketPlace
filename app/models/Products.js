@@ -36,7 +36,16 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, "Category is Required"],
-    enum:["fruit","bakery","dairy","vegetable","nuts","pulse","beverages","spices"]
+    enum: [
+      "fruit",
+      "bakery",
+      "dairy",
+      "vegetable",
+      "nuts",
+      "pulse",
+      "beverages",
+      "spices",
+    ],
   },
   stock: {
     type: Number,
@@ -57,6 +66,10 @@ const productSchema = new mongoose.Schema({
       type: String,
       required: [true, "Seller address is required"],
     },
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true,
   },
   createdAt: {
     type: String,

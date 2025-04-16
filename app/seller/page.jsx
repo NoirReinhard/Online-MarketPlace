@@ -27,7 +27,7 @@ const seller = async () => {
     ...product,
     _id: product._id.toString(), // Convert ObjectId to string
   }));
-  console.log(serializedProducts);
+
   return (
     <>
       <div className="sm:px-16 px-8 sm:py-10 pb-12 card_grid gap-5">

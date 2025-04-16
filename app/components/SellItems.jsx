@@ -2,9 +2,12 @@
 import React, { useState } from "react";
 import Button from "../elements/Button";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
 
 const sellItems = () => {
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -13,6 +16,7 @@ const sellItems = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append("image", image);
     formData.append("productName", e.target.productName.value);
@@ -33,6 +37,7 @@ const sellItems = () => {
       const data = await res.json();
       if (data) {
         router.push("/seller");
+        toast.success("Product uploaded successfully!");
       } else {
         alert(data.error || "Failed to upload product");
       }
@@ -178,13 +183,31 @@ const sellItems = () => {
             />
           </div>
           <div className="flex gap-5 justify-center">
-            <Button label="Submit" className="mt-10  px-4  py-1" />
             <Button
-              label="Cancel"
-              className="mt-10  px-4  py-1"
-              backColor="white"
-              color="black"
+              label={loading ? "Uploading.." : "Sell"}
+              className="mt-10  px-10  py-1"
             />
+            {loading ? (
+              <Link href="/seller" className="px-4 py-1 cursor-not-allowed">
+                <Button
+                  disabled={loading}
+                  label="Cancel"
+                  className="mt-10  px-4  py-1 cursor-not-allowed"
+                  backColor="white"
+                  color="black"
+                />
+              </Link>
+            ) : (
+              <Link href="/seller">
+                <Button
+                  disabled={loading}
+                  label="Cancel"
+                  className="mt-10  px-4  py-1"
+                  backColor="white"
+                  color="black"
+                />
+              </Link>
+            )}
           </div>
         </form>
       </div>

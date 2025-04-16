@@ -62,7 +62,7 @@ export async function POST(req) {
     const address = formData.get("address");
     const image = formData.get("image");
     const category = formData.get("category");
-    console.log("Formdata",formData);
+
 
     if (!image) {
       return NextResponse.json(

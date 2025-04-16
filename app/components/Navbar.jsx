@@ -16,11 +16,12 @@ import Image from "next/image";
 import { useCart } from "./CartContext";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 const Button = dynamic(() => import("../elements/Button"), { ssr: false });
 
 const Navbar = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [toggle, setToggle] = useState(false);
   const [scart, setcart] = useState(false);
   const [search, setSearch] = useState("");
@@ -39,17 +40,14 @@ const Navbar = () => {
       callbackUrl: "/Login",
     });
   };
-
+  const pathname = usePathname();
+  console.log(pathname, "pathhhhhhhhhhhhhh");
   const toggleNavigation = () => setToggle(!toggle);
   const cartNavigation = () => setcart(!scart);
 
   const searchProduct = (e) => {
     setSearch(e.target.value);
   };
-
-  useEffect(() => {
-    console.log("Search Product", search);
-  }, [search]);
 
   useEffect(() => {
     const subtotal = cart.reduce(
@@ -114,10 +112,23 @@ const Navbar = () => {
         <div className="flex gap-5 items-center">
           {mounted && (
             <>
-              <div className="flex items-center font-semibold text-lg gap-1">
-                <FontAwesomeIcon icon={faUser} width={24} height={24} />
-                <p className=" text-primary max-lg:hidden">User</p>
-              </div>
+              {pathname == "/seller" ? (
+                <Link
+                  href="/seller/sellItem"
+                  className="hidden md:flex text-primary text-lg  font-semibold  max-lg:hidden"
+                >
+                  Sell
+                  <img
+                    src="/assets/arrow-right.svg"
+                    className="ml-2 rounded-full bg-white w-8 h-8"
+                  ></img>
+                </Link>
+              ) : (
+                <div className="flex items-center font-semibold text-lg gap-1">
+                  <FontAwesomeIcon icon={faUser} width={24} height={24} />
+                  <p className=" text-primary max-lg:hidden">User</p>
+                </div>
+              )}
 
               <div
                 className="flex items-center font-semibold text-lg gap-1 hover:cursor-pointer"
@@ -151,14 +162,17 @@ const Navbar = () => {
             </>
           ) : (
             mounted && (
-              <button className="hidden md:block text-white bg-[#4b5966] rounded-full px-4 py-2">
-                Sign In
-              </button>
+              <Link href="/Login">
+                <button className="hidden md:block text-white bg-[#4b5966] rounded-full px-4 py-2">
+                  Sign In
+                </button>
+              </Link>
             )
           )}
         </div>
       </div>
-      {/*Cart*/}
+
+      {/* Cart */}
       <div
         className={`${
           scart ? "right-0" : "-right-full"
@@ -173,7 +187,6 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Navigation items */}
         {cart.length === 0 ? (
           <p>Cart is empty</p>
         ) : (
@@ -231,7 +244,6 @@ const Navbar = () => {
                   </div>
                 ))}
               </div>
-              {/* Subtotal, Delivery Cost, and Total */}
               <div className="border-t z-100">
                 <div className="flex justify-between items-center mt-5">
                   <p className="text-gray-500 font-semibold">Sub-Total:</p>
@@ -272,6 +284,8 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {/* Side Menu */}
       <div
         className={`${
           toggle ? "left-0" : "-left-full"
@@ -286,7 +300,6 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Navigation items */}
         <ul className="mt-4 space-y-3">
           {nav.map((item, index) => (
             <li
