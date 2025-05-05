@@ -4,23 +4,26 @@ import Button from "../elements/Button";
 import Image from "next/image";
 import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
-import { useCart } from "@/app/components/CartContext";
 import CartActions from "@/app/components/CartActions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const ProductCard = ({ product, ishome }) => {
-  const { addToCart } = useCart();
-  const [check, setcheck] = useState(false);
   const [show, setshow] = useState(false);
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`seller/update-product?id=${product._id}`);
+  };
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/products/${product._id}`, {
         method: "DELETE",
       });
-
+      const res = await response.json();
       if (response.ok) {
-        console.log("Product deleted successfully");
+        toast.success(res.message);
       } else {
-        const errorData = await response.json();
+        toast.error(errorData.error);
         console.error("Error deleting product:", errorData.error);
       }
     } catch (error) {
@@ -57,14 +60,30 @@ const ProductCard = ({ product, ishome }) => {
           </div>
         )}
       </div>
-      <p className="text-16-medium md:pt-[20px] sm:pt-[8px]">
-        {product.seller.name}
-      </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="text-16-medium md:pt-[20px] sm:pt-[8px]">
+            {product.sellerId.username}
+          </p>
+          <p className="text-26-semibold  capitalize line-clamp-1">
+            {product.name}
+          </p>
+        </div>
+        <Link href={`/profile/${product.sellerId._id}`} passHref>
+          <Image
+            src={
+              product.sellerId.imgURL ||
+              "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
+            }
+            alt={product.sellerId.username}
+            height={40}
+            width={40}
+            className="rounded-full w-[40px] h-[40px] object-cover"
+          ></Image>
+        </Link>
+      </div>
+      <p className="startup-card_desc">{product.description}</p>
       <Link href={`/products/${product._id}`} passHref>
-        <p className="text-26-semibold  capitalize line-clamp-1">
-          {product.name}
-        </p>
-        <p className="startup-card_desc">{product.description}</p>
         <Image
           src={product.imageUrl}
           width={150}
@@ -73,10 +92,14 @@ const ProductCard = ({ product, ishome }) => {
           className="w-[350px] md:h-[200px] h-[150px] object-cover max-w-[100%] rounded-lg pt-[5px]"
         />
       </Link>
-        <div className="flex justify-between items-center pt-[15px] ">
-          <p className="font-semibold text-2xl">₹{product.price}</p>
-          {!ishome && <CartActions product={product} />}
-        </div>
+      <div className="flex justify-between items-center pt-[15px] ">
+        <p className="font-semibold text-2xl">₹{product.price}</p>
+        {!ishome ? (
+          <CartActions product={product} />
+        ) : (
+          <Button label="Update Product" onClick={() => handleClick()}></Button>
+        )}
+      </div>
     </div>
   );
 };

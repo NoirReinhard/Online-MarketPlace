@@ -9,9 +9,10 @@ const UserFind = async () => {
   const { user } = await getSession();
   const em = user.email;
   await connectDB();
+  const sellerId = user.id;
   const userRecord = await User.findOne({ email: em });
   const { username } = userRecord;
-  return { username, email: em };
+  return { username, email: em, sellerId };
 };
 
 cloudinary.config({
@@ -63,7 +64,6 @@ export async function POST(req) {
     const image = formData.get("image");
     const category = formData.get("category");
 
-
     if (!image) {
       return NextResponse.json(
         { error: "Image file is required" },
@@ -77,8 +77,7 @@ export async function POST(req) {
 
     await connectDB();
     const user = await UserFind();
-
-    // const date=new Date();
+    
 
     const product = await Product.create({
       name: productName,
@@ -89,12 +88,9 @@ export async function POST(req) {
       quantity: parseInt(quantity),
       unit: unit,
       stock: parseInt(stock),
-      seller: {
-        name: user.username,
-        email: user.email,
-        address: address,
-      },
-      category:category,
+      address,
+      sellerId: user.sellerId,
+      category: category,
       createdAt: new Date().toLocaleDateString("en-US", {
         month: "long",
         day: "numeric",

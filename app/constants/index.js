@@ -97,3 +97,17 @@ export const banstatus = [
     status: false,
   },
 ];
+export const userfilter = [
+  {
+    role: "All",
+  },
+  {
+    role: "buyer",
+  },
+  {
+    role: "seller",
+  },
+  {
+    role: "admin",
+  },
+];

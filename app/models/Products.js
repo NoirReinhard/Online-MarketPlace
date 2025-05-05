@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema({
     required: [true, "Price is required"],
     min: [0, "Price must be greater than or equal to 0"],
   },
+  address: {
+    type: String,
+    required: [true, "Adress is required"],
+  },
   description: {
     type: String,
     required: [true, "Description is required"],
@@ -52,20 +56,10 @@ const productSchema = new mongoose.Schema({
     required: [true, "Full quantity is required"],
     min: [0, "Full quantity cannot be negative"],
   },
-  seller: {
-    name: {
-      type: String,
-      required: [true, "Seller name is required"],
-    },
-    email: {
-      type: String,
-      required: [true, "Seller email is required"],
-      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
-    },
-    address: {
-      type: String,
-      required: [true, "Seller address is required"],
-    },
+  sellerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "Seller ID is required"],
   },
   isAvailable: {
     type: Boolean,

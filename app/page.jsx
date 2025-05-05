@@ -23,10 +23,17 @@ const page = async () => {
   await connectDB();
   const products = await Product.find({ isAvailable: true })
     .sort({ dateobj: -1, _id: -1 })
-    .lean();
+    .lean()
+    .populate("sellerId");
   const serializedProducts = products.map((product) => ({
     ...product,
     _id: product._id.toString(),
+    sellerId: {
+      _id: product.sellerId._id.toString(),
+      username: product.sellerId.username,
+      email: product.sellerId.email,
+      imgURL: product.sellerId.imgURL,
+    },
   }));
 
   return (

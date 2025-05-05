@@ -10,12 +10,12 @@
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari */
+  display: none;
 }
 
 .scrollbar-hidden {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @layer utilities {
@@ -28,8 +28,8 @@
   .padding {
     @apply sm:px-16 px-8 sm:py-16 py-12;
   }
-  .category-list{
-    @apply flex gap-2 items-center hover:bg-gray-200 bg-white text-black py-1 px-2;    
+  .category-list {
+    @apply flex gap-2 items-center hover:bg-gray-200 bg-white text-black py-1 px-2;
   }
   .padding-l {
     @apply sm:pl-16 pl-8;
@@ -50,7 +50,29 @@
   .startup-card {
     @apply bg-white border-[5px] border-r-[10px] border-b-[10px] border-black py-6 px-5 rounded-[22px]  transition-all duration-500 hover:bg-primary-100 hover:border-primary;
   }
-  .toggle{
-    @apply hidden;
+  .text-30-extrabold {
+    @apply text-[30px] font-extrabold text-white;
+  }
+  .text-24-black {
+    @apply text-[24px] font-black text-black;
+  }
+  .text-30-bold {
+    @apply text-[30px] font-bold text-black;
+  }
+  /* profile */
+  .profile_container {
+    @apply w-full pb-10 pt-20 px-6 max-w-7xl mx-auto lg:flex-row flex-col flex gap-10;
+  }
+
+  .profile_card {
+    @apply w-80 px-6 pb-6 pt-20 flex flex-col justify-center items-center bg-primary border-[5px] border-black  rounded-[30px] relative z-0 h-fit max-lg:w-full;
+  }
+
+  .profile_title {
+    @apply w-11/12 bg-white border-[5px] border-black rounded-[20px] px-5 py-3 absolute -top-9 after:absolute after:content-[''] after:-top-1 after:right-0 after:-skew-y-6 after:bg-black after:-z-[1] after:rounded-[20px] after:w-full after:h-[60px] before:absolute before:content-[''] before:-bottom-1 before:left-0  before:-skew-y-6 before:w-full before:h-[60px] before:bg-black  before:-z-[1] before:rounded-[20px];
+  }
+
+  .profile_image {
+    @apply rounded-full object-cover border-[3px] border-black w-[210px] h-[210px];
   }
 }

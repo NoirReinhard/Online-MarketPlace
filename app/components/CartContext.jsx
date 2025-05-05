@@ -22,7 +22,7 @@ export const CartProvider = ({ children }) => {
       if (existingItem) {
         return prevCart.map((item) =>
           item._id === product._id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, cquantity: item.cquantity + 1 }
             : item
         );
       } else {
@@ -30,7 +30,8 @@ export const CartProvider = ({ children }) => {
           id: `added-${product._id}`,
           description: `Product ${product.name} added to cart`,
         });
-        return [...prevCart, { ...product, quantity: 1 }];
+        console.log("Product added to carttttttttttttttt:", product);
+        return [...prevCart, { ...product, cquantity: 1 }];
       }
     });
   };
@@ -41,7 +42,7 @@ export const CartProvider = ({ children }) => {
 
   const updateQuantity = (id, quantity) => {
     setCart((prevCart) =>
-      prevCart.map((item) => (item._id === id ? { ...item, quantity } : item))
+      prevCart.map((item) => (item._id === id ? { ...item, cquantity:quantity } : item))
     );
   };
 

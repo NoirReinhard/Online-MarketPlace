@@ -3,6 +3,7 @@ import { Order } from "@/app/models/Order";
 import { getSession } from "@/app/lib/getSession";
 import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
+import { sendEmail } from "@/app/lib/mailer";
 
 const order = async (formData, cart) => {
   const session = await getSession();
@@ -11,13 +12,16 @@ const order = async (formData, cart) => {
   }
 
   const { address, city, state, postCode } = formData;
-
   await connectDB();
 
-  for (const item of cart) {
-    const { _id, name, imageUrl, price, quantity } = item;
+  const items = [];
+  let subTotal = 0;
 
-    const product = await Product.findById(_id);
+  for (const item of cart) {
+    const { _id, name, imageUrl, price, cquantity } = item;
+    const product = await Product.findById(_id).populate("sellerId");
+    const seller = product.sellerId.toObject();
+
     if (!product) {
       return {
         success: false,
@@ -25,44 +29,58 @@ const order = async (formData, cart) => {
       };
     }
 
-    if (product.stock > 0) {
-      if (quantity <= product.stock) {
-        product.stock -= quantity;
-
-        if (product.stock === 0) {
-          product.isAvailable = false;
-        }
-
-        await product.save();
-        const sub_tot = price * quantity;
-        const delivery = sub_tot * 0.05;
-        const total = sub_tot + delivery;
-        await Order.create({
-          address,
-          city,
-          state,
-          phoneNumber: postCode,
-          buyer: session.user.username,
-          productname: name,
-          imageUrl,
-          price: total,
-          quantity,
-          productId: _id,
-          email: session.user.email,
-        });
-      } else {
-        return {
-          success: false,
-          message: `Only ${product.stock} items left in stock for ${product.name}.`,
-        };
-      }
-    } else {
+    if (product.stock < cquantity) {
       return {
         success: false,
-        message: `${product.name} is out of stock.`,
+        message: `Only ${product.stock} items left in stock for ${product.name}.`,
       };
     }
+
+    product.stock -= cquantity;
+    if (product.stock === 0) {
+      product.isAvailable = false;
+    }
+
+    await product.save();
+
+    items.push({
+      productId: _id,
+      productname: name,
+      imageUrl,
+      price,
+      quantity: cquantity,
+      sellerId: seller._id,
+    });
+
+    await sendEmail({
+      to: seller.email,
+      subject: "New Order Received – Check Your Dashboard",
+      html: `
+        <p>Hello ${seller.username},</p>
+        <p>Your product <strong>${name}</strong> was just purchased.</p>
+        <p><strong>Quantity:</strong> ${cquantity}</p>
+        <p><strong>Total:</strong> $${price * cquantity}</p>
+        <p>Check your seller dashboard for more details.</p>
+        <p>You’re receiving this email because you’re a seller on Noir. Contact us at support@noir.com.</p>
+      `,
+    });
+
+    subTotal += price * cquantity;
   }
+
+  const delivery = subTotal * 0.05;
+  const total = subTotal + delivery;
+
+  await Order.create({
+    buyer: session.user.id,
+    email: session.user.email,
+    phoneNumber: postCode,
+    address,
+    city,
+    state,
+    items,
+    totalAmount: total,
+  });
 
   return {
     success: true,

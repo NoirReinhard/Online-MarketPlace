@@ -7,7 +7,6 @@ import {
   faMagnifyingGlass,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { Logo, nav } from "../constants";
@@ -17,6 +16,9 @@ import { useCart } from "./CartContext";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
+import { useUserContext } from "@/app/components/UserContext";
+
 const Button = dynamic(() => import("../elements/Button"), { ssr: false });
 
 const Navbar = () => {
@@ -29,10 +31,59 @@ const Navbar = () => {
   const [deliveryCost, setDeliveryCost] = useState(0);
   const [total, setTotal] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [ban, setBan] = useState(false);
+  const [profileImg, setProfileImg] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  var MenuItems = [];
 
   useEffect(() => {
     setMounted(true);
   }, []);
+  useEffect(() => {
+    fetch("/api/get-products")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+  }, []);
+  useEffect(() => {
+    if (!session?.user?.email) return;
+
+    fetch("/api/get-users")
+      .then((res) => res.json())
+      .then((data) => {
+        const user = data.find((item) => item.email === session.user.email);
+        if (user) {
+          setProfileImg(user.imgURL);
+        }
+        const isBanned = data
+          .map((item) => item.email)
+          .includes(session.user.email);
+        setBan(isBanned); // Still update the state for UI if needed
+
+        if (ban) {
+          toast.error("You are banned from this site", {
+            duration: 5000,
+            description: "Please contact support for more information.",
+            action: {
+              text: "Contact Support",
+              onClick: () =>
+                (window.location.href = "mailto:janakimano6@gmail.com"),
+            },
+          });
+          signOut({
+            redirect: true,
+            callbackUrl: "/Login",
+          });
+        }
+      });
+  }, [session?.user?.email]);
+
+  console.log(profileImg, "profileImgggggggggggggggg");
 
   const handleSignOut = () => {
     signOut({
@@ -46,12 +97,23 @@ const Navbar = () => {
   const cartNavigation = () => setcart(!scart);
 
   const searchProduct = (e) => {
-    setSearch(e.target.value);
+    const keyword = e.target.value;
+    setSearch(keyword);
+
+    if (keyword.trim() === "") {
+      setFilteredProducts([]);
+      return;
+    }
+
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(keyword.toLowerCase())
+    );
+    setFilteredProducts(filtered);
   };
 
   useEffect(() => {
     const subtotal = cart.reduce(
-      (acc, item) => acc + item.price * item.quantity,
+      (acc, item) => acc + item.price * item.cquantity,
       0
     );
     setPrice(subtotal);
@@ -62,10 +124,65 @@ const Navbar = () => {
     setTotal(subtotal + delivery);
   }, [cart]);
 
+  const isAdmin = session?.user?.role === "admin";
+  const isSeller = session?.user?.role === "seller";
+  const isBuyer = !isAdmin && !isSeller;
+
+  const onSellerPage = pathname.startsWith("/seller");
+  const onAdminPage = pathname.startsWith("/Dashboard");
+  const onBuyerPage =
+    pathname === "/" ||
+    pathname.startsWith("/search") ||
+    pathname.startsWith("/cart") ||
+    pathname.startsWith("/orders") ||
+    pathname.startsWith("/products");
+
+  if (isAdmin) {
+    if (onAdminPage) {
+      MenuItems.push(
+        { title: "Dashboard", link: "/Dashboard" },
+        { title: "Users", link: "/Dashboard/users" },
+        { title: "Orders", link: "/Dashboard/orders" }
+      );
+    }
+
+    if (onSellerPage) {
+      MenuItems.push(
+        { title: "Sell Item", link: "/seller/sellItem" },
+        { title: "Orders", link: "/seller/orders" }
+      );
+    }
+
+    if (onBuyerPage) {
+      MenuItems.push(
+        { title: "Orders", link: "/orders" },
+        { title: "Cart", link: "/cart" }
+      );
+    }
+
+    if (!MenuItems.find((item) => item.link === "/Dashboard")) {
+      MenuItems.unshift({ title: "Dashboard", link: "/Dashboard" });
+    }
+  } else if (isSeller || onSellerPage) {
+    MenuItems.push(
+      { title: "Sell Item", link: "/seller/sellItem" },
+      { title: "Orders", link: "/seller/orders" }
+    );
+  } else if (isBuyer || onBuyerPage) {
+    MenuItems.push(
+      { title: "Orders", link: "/orders" },
+      { title: "Cart", link: "/cart" }
+    );
+  }
+  const { profileImage } = useUserContext();
+
   return (
     <>
       {(toggle || scart) && (
-        <div className="fixed bg-black opacity-70 z-50 h-full w-full top-0 left-0"></div>
+        <div
+          className="fixed bg-black opacity-70 z-50 h-full w-full top-0 left-0"
+          onClick={cartNavigation}
+        ></div>
       )}
 
       <div className="px-4 py-5 flex justify-between items-center bg-separate sticky top-0 z-40">
@@ -91,7 +208,7 @@ const Navbar = () => {
           </div>
         </Link>
 
-        <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:wi[250px] max-md:font-semibold max-md:text-xs">
+        <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs relative">
           <input
             type="text"
             suppressHydrationWarning
@@ -107,45 +224,116 @@ const Navbar = () => {
               className="bg-black text-white p-2 rounded-full max-md:p-1 "
             />
           </Link>
+          {search && filteredProducts.length > 0 && (
+            <div
+              className="absolute bg-white border border-gray-300 top-[55px] rounded-md mt-1 font-bold  w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs overflow-y-auto z-50 left-0"
+              onClick={() => setSearch("")}
+            >
+              {filteredProducts.map((product) => (
+                <div
+                  className="flex justify-between items-center p-2 hover:bg-gray-200 w-full hover:cursor-pointer"
+                  key={product._id}
+                >
+                  <div>
+                    <Link
+                      key={product._id}
+                      href={`/products/${product._id}`}
+                      className="flex items-center gap-2 p-2"
+                    >
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        width={60}
+                        height={60}
+                        className="rounded-md"
+                      />
+                      <div>
+                        <h3 className="text-gray-700 font-semibold">
+                          {product.name}
+                        </h3>
+                        <p className="text-gray-500">₹{product.price}.00</p>
+                      </div>
+                    </Link>
+                  </div>
+                  <Link href={`/profile/${product.sellerId._id}`}>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-gray-700 text-sm font-semibold">
+                        {product.sellerId.username}
+                      </h3>
+                      <Image
+                        src={
+                          product.sellerId.imgURL ||
+                          "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
+                        }
+                        alt="Profile"
+                        width={40}
+                        height={20}
+                        className="rounded-full object-cover  h-[30px] w-[30px]  hover:cursor-pointer"
+                      />
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex gap-5 items-center">
           {mounted && (
             <>
-              {pathname == "/seller" ? (
-                <Link
-                  href="/seller/sellItem"
-                  className="hidden md:flex text-primary text-lg  font-semibold  max-lg:hidden"
-                >
-                  Sell
-                  <img
-                    src="/assets/arrow-right.svg"
-                    className="ml-2 rounded-full bg-white w-8 h-8"
-                  ></img>
-                </Link>
-              ) : (
-                <div className="flex items-center font-semibold text-lg gap-1">
-                  <FontAwesomeIcon icon={faUser} width={24} height={24} />
-                  <p className=" text-primary max-lg:hidden">User</p>
-                </div>
-              )}
+              {MenuItems.map((item, index) => {
+                if (item.title === "Cart") {
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center font-semibold text-lg gap-1 hover:cursor-pointer"
+                      onClick={cartNavigation}
+                    >
+                      <div className="relative">
+                        <p className="bg-button_color text-white px-1 text-xs rounded-full absolute top-[-3px] left-[15px] ">
+                          {cart.length}
+                        </p>
+                        <div className="flex justify-center items-center gap-1">
+                          <FontAwesomeIcon
+                            icon={faCartPlus}
+                            width={24}
+                            height={24}
+                            className="text-black"
+                          />
+                          <p className="hidden md:flex text-primary text-lg font-semibold hover:cursor-pointer">
+                            {item.title}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
-              <div
-                className="flex items-center font-semibold text-lg gap-1 hover:cursor-pointer"
-                onClick={cartNavigation}
-              >
-                <div className="relative">
-                  <p className="bg-button_color text-white px-1 text-xs rounded-full absolute top-[-3px] right-[-5px]">
-                    {cart.length}
-                  </p>
-                  <FontAwesomeIcon icon={faCartPlus} width={24} height={24} />
-                </div>
-                <p className=" text-primary max-lg:hidden">Cart</p>
-              </div>
+                return (
+                  <Link href={item.link} key={index}>
+                    <p className="hidden md:flex text-primary text-lg font-semibold hover:cursor-pointer">
+                      {item.title}
+                    </p>
+                  </Link>
+                );
+              })}
             </>
           )}
           {mounted && session ? (
             <>
+              <Link href={`/profile/${session.user?.id}`}>
+                <Image
+                  src={
+                    profileImage ||
+                    profileImg ||
+                    "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
+                  }
+                  alt="Profile"
+                  width={40}
+                  height={20}
+                  className="rounded-full object-cover  h-[40px] w-[40px]  hover:cursor-pointer"
+                />
+              </Link>
               <FontAwesomeIcon
                 icon={faArrowRightFromBracket}
                 width={24}
@@ -218,18 +406,18 @@ const Navbar = () => {
                           onClick={() =>
                             updateQuantity(
                               item._id,
-                              item.quantity > 1
-                                ? item.quantity - 1
-                                : item.quantity
+                              item.cquantity > 1
+                                ? item.cquantity - 1
+                                : item.cquantity
                             )
                           }
                         >
                           -
                         </button>
-                        <p>{item.quantity}</p>
+                        <p>{item.cquantity}</p>
                         <button
                           onClick={() =>
-                            updateQuantity(item._id, item.quantity + 1)
+                            updateQuantity(item._id, item.cquantity + 1)
                           }
                         >
                           +

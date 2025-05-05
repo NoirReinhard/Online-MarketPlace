@@ -6,8 +6,7 @@ import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
 
 const Page = () => {
-  const { cart, addToCart, removeFromCart, updateQuantity, clearCart } =
-    useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const [total, setTotal] = useState(0);
   const router = useRouter();
 
@@ -15,7 +14,7 @@ const Page = () => {
     let totalAmount = 0;
     let subtotal = 0;
     cart.forEach((item) => {
-      subtotal += item.price * item.quantity;
+      subtotal += item.price * item.cquantity;
       let delivery = subtotal * 0.05;
       totalAmount = subtotal + delivery;
     });
@@ -67,19 +66,19 @@ const Page = () => {
                         onClick={() =>
                           updateQuantity(
                             item._id,
-                            item.quantity > 1
-                              ? item.quantity - 1
-                              : item.quantity
+                            item.cquantity > 1
+                              ? item.cquantity - 1
+                              : item.cquantity
                           )
                         }
                       >
                         -
                       </button>
-                      <p className="">{item.quantity}</p>
+                      <p className="">{item.cquantity}</p>
                       <button
                         className="text-gray-500 hover:text-gray-700 font-semibold"
                         onClick={() =>
-                          updateQuantity(item._id, item.quantity + 1)
+                          updateQuantity(item._id, item.cquantity + 1)
                         }
                       >
                         +
@@ -87,7 +86,7 @@ const Page = () => {
                     </div>
                   </td>
                   <td className="p-4 text-gray-600">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(item.price * item.cquantity).toFixed(2)}
                   </td>
                   <td className="p-4">
                     <button

@@ -13,19 +13,22 @@ const seller = async () => {
   } else redirect("/Login");
   await connectDB();
   const products1 = await Product.find();
-  for (const product of products1) {
-    if (typeof product.createdAt === "string") {
-      const dateObj = new Date(product.createdAt);
-    }
-  }
-  console.log(user.email,"email........");
-  
-  const products = await Product.find({ "seller.email": user.email })
+
+  const products = await Product.find({ sellerId: user.id })
+    .populate("sellerId")
     .sort({ dateobj: -1, _id: -1 })
     .lean();
   const serializedProducts = products.map((product) => ({
     ...product,
-    _id: product._id.toString(), // Convert ObjectId to string
+    sellerId: {
+      _id: product.sellerId._id.toString(),
+      username: product.sellerId.username,
+      email: product.sellerId.email,
+      role: product.sellerId.role,
+      imgURL: product.sellerId.imgURL,
+      isBanned: product.sellerId.isBanned,
+    },
+    _id: product._id.toString(),
   }));
 
   return (

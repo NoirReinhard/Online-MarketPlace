@@ -1,6 +1,16 @@
 import React from "react";
 
-const Button = ({ label, backColor, color, wth, border, className , rounded,onClick}) => {
+const Button = ({
+  label,
+  pseudo,
+  backColor,
+  color,
+  wth,
+  border,
+  className,
+  rounded,
+  onClick,
+}) => {
   return (
     <div>
       <button
@@ -8,7 +18,9 @@ const Button = ({ label, backColor, color, wth, border, className , rounded,onCl
           backColor
             ? `${backColor} ${color} ${border}`
             : "bg-button_color text-white  font-semibold"
-        }  ${wth && "w-full"} ${className && className} ${rounded? "rounded-full":"rounded-md"}`}
+        }  ${wth && "w-full"} ${className && className} ${pseudo && pseudo} ${
+          rounded ? "rounded-full" : "rounded-md"
+        }`}
         onClick={onClick}
       >
         {label}

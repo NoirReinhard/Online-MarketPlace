@@ -23,6 +23,10 @@ const login = async (formData) => {
     if (!res || res.error) {
       return { success: false, message: "Invalid Credentials" };
     }
+    
+    if (findRole?.isBanned) {
+      return { success: false, message: "You are banned" };
+    }
 
     let redirectTo = "/";
     if (findRole?.role === "admin") redirectTo = "/Dashboard";

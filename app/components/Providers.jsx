@@ -1,4 +1,4 @@
-"use client"; // Ensure this runs on the client side
+"use client";
 
 import { SessionProvider } from "next-auth/react";
 import { CartProvider } from "@/app/components/CartContext";
