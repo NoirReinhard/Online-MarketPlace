@@ -5,6 +5,9 @@ import { UserCheck } from "lucide-react";
 import { toast } from "sonner";
 import { banstatus } from "@/app/constants";
 import Button from "@/app/elements/Button";
+import Image from "next/image";
+import Link from "next/link";
+import Loader from "@/app/components/Loader";
 
 const page = () => {
   const [users, setUsers] = useState([]);
@@ -12,7 +15,9 @@ const page = () => {
   const [selectedRole, setSelectedRole] = useState("All");
   const [allUsers, setAllUsers] = useState([]);
   const [IsBan, setIsBan] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true)
     fetch("/api/get-users")
       .then((res) => res.json())
       .then((data) => {
@@ -20,7 +25,8 @@ const page = () => {
         setUsers(data);
         setAllUsers(data);
         console.log(data.isBanned, "bannnnnnnnnnn");
-      });
+      })
+      .finally(()=>setLoading(false));
   }, []);
   const handleRoleFilter = (roleLabel) => {
     handleFilter(lb, roleLabel);
@@ -52,7 +58,7 @@ const page = () => {
       if (data.success == false) {
         toast.error(data.message);
       } else if (data.success) {
-        toast.success(data.message);
+        toast.success(data.usr + " " + data.message);
         setUsers((prev) =>
           prev.map((user) =>
             user._id === id ? { ...user, isBanned: !user.isBanned } : user
@@ -73,6 +79,8 @@ const page = () => {
     }
   };
   return (
+    <>
+    {loading && <Loader/>}
     <div className="space-y-3 p-4">
       <div className="flex gap-5 justify-center">
         {banstatus.map((category) => {
@@ -81,8 +89,8 @@ const page = () => {
             category.status === true
               ? "Banned"
               : category.status === false
-              ? "Active"
-              : "All";
+                ? "Active"
+                : "All";
 
           const color = isActive ? "text-white" : "text-blue-950 font-semibold";
           const bgColor = isActive ? "bg-button_color" : "bg-white";
@@ -138,21 +146,26 @@ const page = () => {
         </div>
       </div>
       {users.length > 0 ? (
-        users.map((user, index) => (
+        users.map((user) => (
           <div key={user._id} className="mx-auto w-full max-w-2xl">
             <div className="grid grid-cols-[auto_1fr_auto] items-center bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 hover:shadow-md transition duration-200">
-              <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-xs font-bold text-white mr-3">
-                {user.username[0].toUpperCase()}
-              </div>
-
-              <div className="flex flex-col">
-                <span className="text-md font-semibold text-gray-800 dark:text-white">
-                  {user.username}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {user.email}
-                </span>
-              </div>
+              <Link href={`/profile/${user._id}`} className="flex">
+                <Image
+                  src={user.imgURL}
+                  alt={user.username}
+                  height={40}
+                  width={40}
+                  className="rounded-full w-[40px] h-[40px] object-cover"
+                />
+                <div className="flex flex-col ml-3">
+                  <span className="text-md font-semibold text-gray-800 dark:text-white">
+                    {user.username}
+                  </span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {user.email}
+                  </span>
+                </div>
+              </Link>
 
               <div className="flex items-center gap-3 ml-auto">
                 <div className="flex flex-col items-end">
@@ -198,6 +211,7 @@ const page = () => {
         </p>
       )}
     </div>
+    </>
   );
 };
 

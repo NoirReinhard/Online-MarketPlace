@@ -27,8 +27,7 @@ export async function PUT(request, { params }) {
 
   return Response.json({
     success: true,
-    message: user.isBanned
-      ? "User Banned Successfully"
-      : "User UnBanned Successfully",
+    usr: user.username,
+    message: user.isBanned ? "Banned Successfully" : "UnBanned Successfully",
   });
 }

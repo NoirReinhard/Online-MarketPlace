@@ -12,11 +12,10 @@ export default function LoginForm() {
     const formData = new FormData(e.currentTarget);
     const res = await login(formData);
 
-    if (!res.success) {
-      toast.error(res.message || "Login failed");
+    if (res.success) {
+      window.location.href = res.redirect;
     } else {
-      toast.success("Login successful!");
-      router.push(res.redirect || "/");
+      toast.error(res.message);
     }
   };
 
@@ -68,10 +67,10 @@ export default function LoginForm() {
       </form>
 
       <form
-        // action={async () => {
-        //   "use server";
-        //   await signIn("google");
-        // }}
+      // action={async () => {
+      //   "use server";
+      //   await signIn("google");
+      // }}
       >
         <button type="submit" className="p-2 w-[200px] mt-10 shadow-md">
           Google

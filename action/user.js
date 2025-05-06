@@ -10,12 +10,19 @@ const login = async (formData) => {
   const password = formData.get("password");
 
   await connectDB();
-  const findRole = await User.findOne({ email });
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+
+  if (user.isBanned) {
+    return { success: false, message: "You are banned" };
+  }
 
   try {
     const res = await signIn("credentials", {
       redirect: false,
-      callbackUrl: "/",
       email,
       password,
     });
@@ -23,28 +30,24 @@ const login = async (formData) => {
     if (!res || res.error) {
       return { success: false, message: "Invalid Credentials" };
     }
-    
-    if (findRole?.isBanned) {
-      return { success: false, message: "You are banned" };
-    }
 
     let redirectTo = "/";
-    if (findRole?.role === "admin") redirectTo = "/Dashboard";
-    else if (findRole?.role === "seller") redirectTo = "/seller";
+    if (user.role === "admin") redirectTo = "/Dashboard";
+    else if (user.role === "seller") redirectTo = "/seller";
 
     return { success: true, redirect: redirectTo };
   } catch (error) {
-    return { success: false, message: "Invalid Credentials" };
+    return { success: false, message: "Login failed" };
   }
 };
 
 const register = async (formData) => {
   const username = formData.get("username");
   const password = formData.get("password");
-  const email = formData.get("email");
+  const email = formData.get("email")?.toLowerCase();
   const role = formData.get("role");
 
-  if (!username || !password || !email) {
+  if (!username || !password || !email || !role) {
     return { success: false, message: "Fill all the fields" };
   }
 

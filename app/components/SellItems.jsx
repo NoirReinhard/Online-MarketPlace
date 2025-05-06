@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import Loader from "./Loader";
 
 const SellItems = () => {
   const router = useRouter();

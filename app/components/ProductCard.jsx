@@ -7,9 +7,14 @@ import Link from "next/link";
 import CartActions from "@/app/components/CartActions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { useUserContext } from "./UserContext";
 
 const ProductCard = ({ product, ishome }) => {
   const [show, setshow] = useState(false);
+  const { data: session } = useSession();
+  const { profileImage } = useUserContext();
+
   const router = useRouter();
   const handleClick = () => {
     router.push(`seller/update-product?id=${product._id}`);
@@ -21,6 +26,7 @@ const ProductCard = ({ product, ishome }) => {
       });
       const res = await response.json();
       if (response.ok) {
+        router.refresh();
         toast.success(res.message);
       } else {
         toast.error(errorData.error);
@@ -38,7 +44,7 @@ const ProductCard = ({ product, ishome }) => {
     >
       <div className="flex justify-between items-center">
         <p>{product.createdAt}</p>
-        {ishome == "False" && (
+        {(ishome == "False" || session?.user?.role == "admin") && (
           <FaTrash
             className="text-lg hover:cursor-pointer text-red-600"
             onClick={() => setshow(true)}
@@ -47,17 +53,25 @@ const ProductCard = ({ product, ishome }) => {
       </div>
       <div>
         {show && (
-          <div className="absolute top-0 left-0 w-[350px] h-[490px] bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-5 rounded-lg">
-              <p className="text-2xl">Are you sure you want to delete?</p>
-              <div className="flex justify-between items-center pt-[20px]">
-                <Button label="Cancel" onClick={() => setshow(false)} />
-                <button label="Delete" onClick={handleDelete}>
-                  Delete
-                </button>
+          <>
+            <div className="bg-black bg-opacity-50 fixed inset-0 z-40" />
+            <div className="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="bg-white p-5 rounded-lg">
+                <p className="text-xl">Are you sure you want to delete?</p>
+                <div className="flex justify-between items-center pt-[20px]">
+                  <Button
+                    label="Cancel"
+                    backColor="bg-white"
+                    color="text-black"
+                    onClick={() => setshow(false)}
+                  />
+                  <Button label="Delete" onClick={handleDelete}>
+                    Delete
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
       <div className="flex justify-between items-center">
@@ -72,6 +86,7 @@ const ProductCard = ({ product, ishome }) => {
         <Link href={`/profile/${product.sellerId._id}`} passHref>
           <Image
             src={
+              profileImage ||
               product.sellerId.imgURL ||
               "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
             }

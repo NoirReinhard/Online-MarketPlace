@@ -60,12 +60,11 @@ const Navbar = () => {
         if (user) {
           setProfileImg(user.imgURL);
         }
-        const isBanned = data
-          .map((item) => item.email)
-          .includes(session.user.email);
-        setBan(isBanned); // Still update the state for UI if needed
 
-        if (ban) {
+        const isBanned = user?.banned === true;
+        setBan(isBanned);
+
+        if (isBanned) {
           toast.error("You are banned from this site", {
             duration: 5000,
             description: "Please contact support for more information.",
@@ -75,6 +74,7 @@ const Navbar = () => {
                 (window.location.href = "mailto:janakimano6@gmail.com"),
             },
           });
+
           signOut({
             redirect: true,
             callbackUrl: "/Login",
@@ -207,10 +207,11 @@ const Navbar = () => {
             </h4>
           </div>
         </Link>
-
+      {mounted &&
         <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs relative">
           <input
             type="text"
+            value={search}
             suppressHydrationWarning
             placeholder="Search Products"
             className="flex-1 bg-transparent focus:outline-none"
@@ -221,24 +222,25 @@ const Navbar = () => {
               icon={faMagnifyingGlass}
               width={20}
               height={20}
-              className="bg-black text-white p-2 rounded-full max-md:p-1 "
+              className="bg-black text-white p-2 rounded-full max-md:p-1"
+              onClick={()=>{setSearch("");setSearch("")}}
             />
           </Link>
           {search && filteredProducts.length > 0 && (
             <div
-              className="absolute bg-white border border-gray-300 top-[55px] rounded-md mt-1 font-bold  w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs overflow-y-auto z-50 left-0"
+              className="absolute bg-white border border-gray-300 top-[55px] rounded-md mt-1 font-bold  w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:font-semibold max-md:text-xs overflow-y-auto z-50 left-0"                        
               onClick={() => setSearch("")}
             >
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product,index) => (
                 <div
-                  className="flex justify-between items-center p-2 hover:bg-gray-200 w-full hover:cursor-pointer"
+                  className={`flex justify-between ${filteredProducts.length == index+1 ? "": "border-b border-gray-300"} items-center p-2 hover:bg-gray-200 w-full hover:cursor-pointer`}
                   key={product._id}
                 >
                   <div>
                     <Link
                       key={product._id}
                       href={`/products/${product._id}`}
-                      className="flex items-center gap-2 p-2"
+                      className="flex items-center gap-2 p-2 w-[300px]"
                     >
                       <Image
                         src={product.imageUrl}
@@ -268,7 +270,7 @@ const Navbar = () => {
                         alt="Profile"
                         width={40}
                         height={20}
-                        className="rounded-full object-cover  h-[30px] w-[30px]  hover:cursor-pointer"
+                        className="rounded-full object-cover h-[30px] w-[30px] border-1 border-red-500 hover:cursor-pointer"
                       />
                     </div>
                   </Link>
@@ -277,6 +279,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
+}
 
         <div className="flex gap-5 items-center">
           {mounted && (

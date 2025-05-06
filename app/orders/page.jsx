@@ -42,10 +42,10 @@ const Page = async () => {
                   Order ID: {order._id}
                 </h2>
                 <p className="text-sm text-gray-600 mb-1">
-                  📞 {order.phoneNumber}
+                  {order.phoneNumber}
                 </p>
                 <p className="text-sm text-gray-600">
-                  📍 {order.address}, {order.city}, {order.state}
+                  {order.address}, {order.city}, {order.state}
                 </p>
               </div>
 

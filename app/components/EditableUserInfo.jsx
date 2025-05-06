@@ -8,6 +8,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useUserContext } from "@/app/components/UserContext";
+import Loader from "@/app/components/Loader";
 
 const EditableUserInfo = ({ user }) => {
   const [editing, setEditing] = useState(false);
@@ -83,7 +84,7 @@ const EditableUserInfo = ({ user }) => {
           <div className="relative">
             {isUploading && (
               <div className="absolute inset-0 bg-white/60 rounded-full flex items-center justify-center z-10">
-                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
 
@@ -122,64 +123,72 @@ const EditableUserInfo = ({ user }) => {
 
           <p className="text-30-extrabold mt-7 text-center">@{user.role}</p>
         </div>
-        <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
-          <p className="text-2xl font-semibold mb-6 text-gray-900 tracking-tight">
-            User Info
-          </p>
+        <div className="relative border-l-4 border-gradient-to-b from-blue-500 via-purple-500 to-pink-500 pl-8 py-6 w-full max-w-2xl">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600 mb-10 relative inline-block after:content-[''] after:block after:h-1 after:bg-primary after:mt-1 after:rounded-full after:w-2/3">
+            User Profile
+          </h2>
 
-          <div className="grid gap-6">
-            {/* Username row */}
-            <div className="flex justify-between items-start group">
+          <div className="space-y-10 text-white">
+            {/* Username Row */}
+            <div className="flex justify-between items-start">
               <div className="w-full">
-                <p className="text-sm font-medium text-gray-500 mb-1">
+                <label className="block text-sm uppercase font-bold text-gray-300 mb-1 tracking-widest">
                   Username
-                </p>
+                </label>
                 {editing ? (
                   <input
                     type="text"
                     value={tempUsername}
                     onChange={(e) => setTempUsername(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                    className="bg-white/10 backdrop-blur-lg text-black px-4 py-2 w-full rounded-lg border border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all placeholder:text-gray-300"
+                    placeholder="Enter username"
                   />
                 ) : (
-                  <p className="text-lg font-medium text-gray-800">
+                  <p className="text-xl font-semibold tracking-tight text-black">
                     {username}
                   </p>
                 )}
               </div>
 
-              <div className="ml-3 mt-6">
-                {editing && (
-                  <div className="flex gap-2 pt-3">
+              <div className="ml-4 mt-4">
+                {editing ? (
+                  <div className="flex gap-3 items-center mt-4">
                     <button
                       onClick={handleSave}
-                      className="text-green-600 hover:text-green-800 transition-colors"
+                      className="text-green-400 hover:text-green-600 text-2xl"
                     >
                       <FaCheck />
                     </button>
                     <button
                       onClick={handleCancel}
-                      className="text-red-600 hover:text-red-800 transition-colors"
+                      className="text-red-400 hover:text-red-600 text-2xl"
                     >
                       <FaTimes />
                     </button>
                   </div>
-                )}
-                {!editing && isvalid && (
-                  <button
-                    onClick={() => setEditing(true)}
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
-                  >
-                    <FaEdit />
-                  </button>
+                ) : (
+                  isvalid && (
+                    <button
+                      onClick={() => setEditing(true)}
+                      className="text-primary hover:text-pink-700 text-2xl"
+                    >
+                      <FaEdit />
+                    </button>
+                  )
                 )}
               </div>
             </div>
 
-            {/* Email row */}
+            <div className="h-[1px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-60" />
+
+            {/* Email Row */}
             <div>
-              <p className="text-sm font-medium text-gray-500 mb-1">Email</p>
-              <p className="text-lg font-medium text-gray-800">{user.email}</p>
+              <label className="block text-sm uppercase font-bold text-gray-300 mb-1 tracking-widest">
+                Email
+              </label>
+              <p className="text-xl font-semibold tracking-tight text-black">
+                {user.email}
+              </p>
             </div>
           </div>
         </div>
