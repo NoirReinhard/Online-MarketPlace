@@ -11,7 +11,6 @@ export async function GET(request, { params }) {
     }
 
     const details = await Product.findById(id);
-    console.log(details,"detailsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
 
     if (!details) {
       return new Response("Product not found", { status: 404 });
@@ -22,7 +21,7 @@ export async function GET(request, { params }) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.log("Error fetching productttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt:", error);
-    return new Response("Internal Server Errorrrrrrrrrrrrrrr", { status: 500 });
+    console.log("Error fetching product", error);
+    return new Response("Internal Server Error", { status: 500 });
   }
 }

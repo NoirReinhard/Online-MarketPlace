@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
-import Loader from "./Loader";
 
 const SellItems = () => {
   const router = useRouter();
@@ -51,13 +50,12 @@ const SellItems = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
-    // Create a preview of the selected image
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result); // Set the image preview
+      setImagePreview(reader.result);
     };
     if (file) {
-      reader.readAsDataURL(file); // Read the file as a Data URL (Base64)
+      reader.readAsDataURL(file);
     }
   };
 
@@ -101,11 +99,11 @@ const SellItems = () => {
       });
 
       const data = await res.json();
-      if (data) {
+      if (!res.ok) {
+        toast.error(data.error || "Failed to upload product");
+      } else {
         router.push("/seller");
         toast.success("Product uploaded successfully!");
-      } else {
-        toast.error(data.error || "Failed to upload product");
       }
     } catch (error) {
       console.error("Error uploading product:", error);
@@ -190,6 +188,7 @@ const SellItems = () => {
               name="quantity"
               className="border-formborder border w-[30%] rounded-sm pl-2 h-10"
               placeholder="Enter Quantity"
+              min="1"
             />
             <select
               name="unit"
@@ -237,7 +236,6 @@ const SellItems = () => {
                 name="image"
                 accept="image/*"
                 onChange={handleImageChange}
-                required
                 className="hidden"
               />
 

@@ -27,8 +27,17 @@ const Page = async () => {
   return (
     <div className="max-w-4xl mx-auto px-3 py-6">
       {serializedOrders.length === 0 ? (
-        <div className="flex items-center justify-center h-[40vh]">
-          <h1 className="text-lg font-medium text-gray-500">No Orders Found</h1>
+        <div className="flex flex-col items-center justify-center h-[80vh] gap-[-50px] relative">
+          <img
+            src="/assets/wagaguri2.png"
+            height="220px"
+            width="220px"
+            alt="Not Found"
+            className="absolute top-[90px]"
+          />
+          <p className="font-semibold text-gray-500 text-lg">
+            No Orders Found!
+          </p>
         </div>
       ) : (
         <div className="space-y-6">

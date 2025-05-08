@@ -111,3 +111,17 @@ export const userfilter = [
     role: "admin",
   },
 ];
+export const sellerfilter = [
+  {
+    label: "All",
+    status: "All",
+  },
+  {
+    label: "In Sale",
+    status: true,
+  },
+  {
+    label: "Sold Out",
+    status: false,
+  },
+];

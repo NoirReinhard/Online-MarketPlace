@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { login } from "@/action/user";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -14,13 +15,14 @@ export default function LoginForm() {
 
     if (res.success) {
       window.location.href = res.redirect;
+      toast.success(res.message || "Logged in successfully!");
     } else {
-      toast.error(res.message);
+      toast.error(res.message || "Login failed");
     }
   };
 
   const handleGoogleLogin = async () => {
-    // if needed, Google login logic can go here
+    await signIn("google");
   };
 
   return (
@@ -31,9 +33,10 @@ export default function LoginForm() {
             Username:
           </label>
           <input
-            className="border-black border rounded-full px-2 py-2 h-[30px] w-full"
+            className="border border-gray-300 rounded-md w-full px-3 py-2"
             type="text"
             name="username"
+            required
           />
         </div>
         <div className="mb-4">
@@ -41,7 +44,7 @@ export default function LoginForm() {
             Email:
           </label>
           <input
-            className="border-black rounded-full px-2 py-2 h-[30px] border w-full"
+            className="border border-gray-300 rounded-md w-full px-3 py-2"
             type="email"
             name="email"
             required
@@ -52,7 +55,7 @@ export default function LoginForm() {
             Password:
           </label>
           <input
-            className="border-black rounded-full px-2 py-2 h-[30px] border w-full"
+            className="border border-gray-300 rounded-md w-full px-3 py-2"
             type="password"
             name="password"
             required
@@ -66,23 +69,14 @@ export default function LoginForm() {
         </button>
       </form>
 
-      <form
-      // action={async () => {
-      //   "use server";
-      //   await signIn("google");
-      // }}
-      >
-        <button type="submit" className="p-2 w-[200px] mt-10 shadow-md">
-          Google
-        </button>
-      </form>
-
-      <p className="mt-4">
-        Don't have an account?{" "}
-        <a href="/register" className="text-blue-600">
-          Register
-        </a>
-      </p>
+      <div className="mt-6 flex flex-col items-center">
+        <p className="mt-4 text-sm text-gray-600">
+          Don't have an account?{" "}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Register
+          </a>
+        </p>
+      </div>
     </>
   );
 }

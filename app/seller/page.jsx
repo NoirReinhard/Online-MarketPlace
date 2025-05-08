@@ -3,8 +3,7 @@ import React from "react";
 import { getSession } from "../lib/getSession";
 import connectDB from "../lib/db";
 import Product from "../models/Products";
-import ProductCard from "../components/ProductCard";
-
+import SellerProducts from "../components/SellerProducts";
 const seller = async () => {
   const session = await getSession();
   const user = session?.user;
@@ -32,13 +31,9 @@ const seller = async () => {
   }));
 
   return (
-    <>
-      <div className="sm:px-16 px-8 sm:py-10 pb-12 card_grid gap-5">
-        {serializedProducts.map((product, i) => (
-          <ProductCard key={i} product={product} ishome="False" />
-        ))}
-      </div>
-    </>
+    <div>
+      <SellerProducts serializedProducts={serializedProducts} />
+    </div>
   );
 };
 

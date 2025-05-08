@@ -14,6 +14,7 @@ const ProductCard = ({ product, ishome }) => {
   const [show, setshow] = useState(false);
   const { data: session } = useSession();
   const { profileImage } = useUserContext();
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const handleClick = () => {
@@ -21,6 +22,7 @@ const ProductCard = ({ product, ishome }) => {
   };
   const handleDelete = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`/api/products/${product._id}`, {
         method: "DELETE",
       });
@@ -34,6 +36,8 @@ const ProductCard = ({ product, ishome }) => {
       }
     } catch (error) {
       console.error("Network error deleting product:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,9 +69,10 @@ const ProductCard = ({ product, ishome }) => {
                     color="text-black"
                     onClick={() => setshow(false)}
                   />
-                  <Button label="Delete" onClick={handleDelete}>
-                    Delete
-                  </Button>
+                  <Button
+                    label={loading ? "Deleting..." : "Delete"}
+                    onClick={handleDelete}
+                  />
                 </div>
               </div>
             </div>
@@ -109,7 +114,7 @@ const ProductCard = ({ product, ishome }) => {
       </Link>
       <div className="flex justify-between items-center pt-[15px] ">
         <p className="font-semibold text-2xl">₹{product.price}</p>
-        {!ishome ? (
+        {!(session?.user?.id == product.sellerId._id) ? (
           <CartActions product={product} />
         ) : (
           <Button label="Update Product" onClick={() => handleClick()}></Button>

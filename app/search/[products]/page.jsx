@@ -48,8 +48,11 @@ const page = async ({ params }) => {
         ))}
       </div>
       {serializedProducts.length === 0 && (
-        <div className="flex justify-center items-center w-full h-[50vh]">
-          <p className="text-lg font-bold">No products found</p>
+        <div className="flex flex-col items-center justify-center h-[60vh] gap-2">
+          <img src="/assets/Ranpo.jpg" height="180px" width="180px" alt="" />
+          <p className="font-semibold text-gray-500 text-lg">
+            No Products Found!
+          </p>
         </div>
       )}
     </div>

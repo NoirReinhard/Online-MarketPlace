@@ -206,9 +206,17 @@ const page = () => {
           </div>
         ))
       ) : (
-        <p className="text-center text-sm text-gray-600 dark:text-gray-300">
-          No users found.
-        </p>
+        <div className="flex flex-col items-center justify-center h-[45vh] gap-2">
+            <img
+              src="/assets/wagaguri1.png"
+              height="180px"
+              width="180px"
+              alt=""
+            />
+            <p className="font-semibold text-gray-500 text-lg">
+              No Users Found!
+            </p>
+          </div>
       )}
     </div>
     </>

@@ -30,19 +30,15 @@ const Dashboard = () => {
   }, []);
 
   const handleFilter = (label) => {
-    console.log("Filter label:", label);
-    console.log("All Orders:", orders);
     setLb(label);
     if (label === "All") {
       setOrders(allOrders);
       return;
     }
     const filteredOrders = allOrders.filter((order) => {
-      console.log("Order Status:", order.status);
       return order.status === label;
     });
 
-    console.log("Filtered:", filteredOrders);
     setOrders(filteredOrders);
   };
 
@@ -67,7 +63,6 @@ const Dashboard = () => {
       toast.error("Failed to update status.");
     }
   };
-  console.log("ordersssssssssssssssss", orders);
 
   return (
     <>
@@ -83,7 +78,7 @@ const Dashboard = () => {
             const color = isActive
               ? "text-white"
               : "text-blue-900 font-semibold";
-            const bgColor = isActive ? "bg-green-600" : "bg-gray-200";
+            const bgColor = isActive ? "bg-green-600" : "bg-white";
 
             return (
               <Button
@@ -101,8 +96,16 @@ const Dashboard = () => {
         </div>
 
         {orders.length === 0 ? (
-          <div className="flex justify-center items-center h-[50vh]">
-            <h1 className="text-xl font-bold text-gray-600">No Orders Found</h1>
+          <div className="flex flex-col items-center justify-center h-[45vh] gap-2">
+            <img
+              src="/assets/wagaguri1.png"
+              height="180px"
+              width="180px"
+              alt=""
+            />
+            <p className="font-semibold text-gray-500 text-lg">
+              No Orders Found!
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

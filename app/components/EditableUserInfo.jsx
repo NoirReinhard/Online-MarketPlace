@@ -8,7 +8,6 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useUserContext } from "@/app/components/UserContext";
-import Loader from "@/app/components/Loader";
 
 const EditableUserInfo = ({ user }) => {
   const [editing, setEditing] = useState(false);
@@ -19,7 +18,7 @@ const EditableUserInfo = ({ user }) => {
   const { data: session } = useSession();
   const isvalid = user._id == session?.user.id;
   const { setProfileImage } = useUserContext();
-
+  const [imgfull, setImgfull] = useState(false);
   const handleSave = async () => {
     const res = await fetch(`/api/update-username/${username}`, {
       method: "PUT",
@@ -74,6 +73,33 @@ const EditableUserInfo = ({ user }) => {
 
   return (
     <div>
+      {imgfull && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hover:cursor-pointer"
+          onClick={() => setImgfull(false)}
+        >
+          <div
+            className="relative w-full h-full max-w-2xl max-h-[90vh] aspect-square"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={imgURL}
+              alt="name"
+              fill
+              className="object-cover w-full h-full rounded-lg"
+            />
+            <button
+              className="absolute top-4 right-4 text-red-500 text-2xl "
+              onClick={(e) => {
+                e.stopPropagation(); // prevent closing when clicking the button
+                setImgfull(false);
+              }}
+            >
+              <FaTimes />
+            </button>
+          </div>
+        </div>
+      )}
       <section className="profile_container">
         <div className="profile_card">
           <div className="profile_title">
@@ -93,7 +119,8 @@ const EditableUserInfo = ({ user }) => {
               alt="name"
               width={220}
               height={220}
-              className="profile_image z-10"
+              className="profile_image z-10 hover:cursor-pointer"
+              onClick={() => setImgfull(true)}
             />
             {isvalid && (
               <>

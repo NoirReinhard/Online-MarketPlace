@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import Button from "@/app/elements/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -14,6 +16,7 @@ const Page = () => {
   const router = useRouter();
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     productName: "",
     price: "",
@@ -23,6 +26,7 @@ const Page = () => {
     category: "fruit",
     stock: "",
     address: "",
+    imageUrl: "",
   });
 
   const validateForm = ({
@@ -60,7 +64,15 @@ const Page = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -78,7 +90,6 @@ const Page = () => {
         const res = await fetch(`/api/get-productDetails/${id}`);
         const data = await res.json();
         setProduct(data);
-        console.log(data, "IMOPEEEEEEEEEEEEEEEEEEEEE");
         setFormData({
           productName: data.name,
           price: data.price,
@@ -88,7 +99,13 @@ const Page = () => {
           category: data.category,
           stock: data.stock,
           address: data.address,
+          imageUrl: data.imageUrl,
         });
+        setImage(data?.imageUrl);
+        if (!data || data.error) {
+          toast.error("Invalid product data");
+          return;
+        }
       } catch (error) {
         console.error("Failed to fetch product:", error);
       }
@@ -98,11 +115,7 @@ const Page = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
-    if (!image) {
-      toast.error("Please upload a valid image.");
-      return;
-    }
+    console.log("Submitting...");
 
     const errorMessage = validateForm(formData);
     if (errorMessage) {
@@ -112,11 +125,16 @@ const Page = () => {
 
     setLoading(true);
     const formPayload = new FormData();
-    formPayload.append("image", image);
+
+    if (image && typeof image !== "string") {
+      formPayload.append("image", image);
+    } else {
+      formPayload.append("imageUrl", formData.imageUrl);
+    }
+
     Object.entries(formData).forEach(([key, value]) =>
       formPayload.append(key, value)
     );
-
     try {
       const res = await fetch(`/api/update-product/${id}`, {
         method: "PUT",
@@ -124,11 +142,11 @@ const Page = () => {
       });
 
       const data = await res.json();
-      if (data) {
+      if (res.ok) {
         router.push("/seller");
-        toast.success("Product Updated successfully!");
+        toast.success("Product updated successfully!");
       } else {
-        toast.error(data.error || "Failed to Update product");
+        toast.error(data.error || "Failed to update product.");
       }
     } catch (error) {
       console.error("Error updating product:", error);
@@ -139,11 +157,11 @@ const Page = () => {
   };
 
   return (
-    <>
+    <div className="padding">
       <h1 className="text-center text-2xl font-semibold pb-5">
         Sell Your <span className="text-button_color">Products</span> Here!
       </h1>
-      <div className="border border-formborder rounded-md p-10">
+      <div className="border border-formborder rounded-md p-10 ">
         <form onSubmit={handleFormSubmit}>
           <div className="flex gap-14">
             <div>
@@ -264,29 +282,68 @@ const Page = () => {
             placeholder="Enter Your Address"
           />
 
-          <div>
-            <label htmlFor="image" className="block my-5 font-semibold">
-              Image
+          <div className="my-6 flex flex-col items-start space-y-2">
+            <label htmlFor="imageUpload" className="font-semibold">
+              Product Image
             </label>
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              required
-            />
+
+            <div className="relative">
+              <input
+                id="imageUpload"
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+
+              <label
+                htmlFor="imageUpload"
+                className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:bg-gray-200 transition duration-200"
+              >
+                <FontAwesomeIcon
+                  icon={faCamera}
+                  className="text-gray-500 text-xl"
+                />
+              </label>
+            </div>
+            {/* Image Preview */}
+            {imagePreview ? (
+              <div className="pt-[10px]">
+                <img
+                  src={imagePreview}
+                  alt="Image Preview"
+                  className="h-64 object-contain rounded-md"
+                />
+              </div>
+            ) : (
+              <div className="pt-[10px]">
+                <img
+                  src={
+                    formData.imageUrl ||
+                    "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746604454/32d18bdb-0dae-4c34-b279-f55df27a37a3.png"
+                  }
+                  alt="Image Preview"
+                  className="h-64 object-contain rounded-md"
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex gap-5 justify-center">
             <Button
-              label={loading ? "Uploading.." : "Sell"}
               className="mt-10 px-10 py-1"
+              type="submit"
+              label={loading ? "Updating.." : "Update"}
             />
+
             <Link href="/seller">
               <Button
                 disabled={loading}
                 label="Cancel"
-                className="mt-10 px-4 py-1"
+                className={`${
+                  loading ? "cursor-not-allowed" : ""
+                } mt-10 px-4 py-1`}
                 backColor="white"
                 color="black"
               />
@@ -294,7 +351,7 @@ const Page = () => {
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

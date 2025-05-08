@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { register } from "@/action/user";
+import { FcGoogle } from "react-icons/fc";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -23,65 +24,58 @@ export default function RegisterForm() {
 
   return (
     <>
-      <form onSubmit={handleRegister} className="w-full">
-        <div className="mb-4">
-          <label
-            htmlFor="username"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Username:
+      <form
+        onSubmit={handleRegister}
+        className="w-full flex flex-col gap-4 text-sm"
+      >
+        <div>
+          <label htmlFor="username" className="block font-medium text-gray-700">
+            Username
           </label>
           <input
-            className="border border-gray-300 rounded-md w-full px-3 py-2"
-            type="text"
-            name="username"
             id="username"
+            name="username"
+            type="text"
             required
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email:
+        <div>
+          <label htmlFor="email" className="block font-medium text-gray-700">
+            Email
           </label>
           <input
-            className="border border-gray-300 rounded-md w-full px-3 py-2"
-            type="email"
+            id="email"
             name="email"
+            type="email"
             required
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password:
+        <div>
+          <label htmlFor="password" className="block font-medium text-gray-700">
+            Password
           </label>
           <input
-            className="border border-gray-300 rounded-md w-full px-3 py-2"
-            type="password"
+            id="password"
             name="password"
+            type="password"
             required
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="role"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Role:
+        <div>
+          <label htmlFor="role" className="block font-medium text-gray-700">
+            Role
           </label>
           <select
-            className="border border-gray-300 rounded-md w-full px-3 py-2"
             name="role"
             id="role"
             required
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="buyer">Buyer</option>
             <option value="seller">Seller</option>
@@ -91,28 +85,17 @@ export default function RegisterForm() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+          className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-200"
         >
           Sign Up
         </button>
 
-        <p className="mt-4 text-sm text-gray-500">
+        <p className="text-center text-gray-500 text-sm mt-3">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">
+          <a href="/Login" className="text-blue-600 hover:underline">
             Login
           </a>
         </p>
-      </form>
-
-      <form
-        // action={async () => {
-        //   "use server";
-        //   await signIn("google");
-        // }}
-      >
-        <button type="submit" className="p-2 w-[200px] mt-10 shadow-md">
-          Google
-        </button>
       </form>
     </>
   );

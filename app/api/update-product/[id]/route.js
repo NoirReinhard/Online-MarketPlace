@@ -3,7 +3,6 @@ import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
 import { NextResponse } from "next/server";
 
-// Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -59,6 +58,7 @@ export async function PUT(req, { params }) {
     const address = formData.get("address");
     const category = formData.get("category");
     const image = formData.get("image");
+    const imageUrl = formData.get("imageUrl");
 
     const product = await Product.findById(id);
     if (!product) {
@@ -68,7 +68,7 @@ export async function PUT(req, { params }) {
     let updatedImageUrl = product.imageUrl;
     let updatedImageId = product.imageId;
 
-    if (image && typeof image === "object") {
+    if (image instanceof File && image.size > 0) {
       const buffer = await fileToBuffer(image);
       const result = await uploadImageToCloudinary(buffer);
 
@@ -76,6 +76,9 @@ export async function PUT(req, { params }) {
 
       updatedImageUrl = result.secure_url;
       updatedImageId = result.public_id;
+    } else if (imageUrl) {
+      updatedImageUrl = imageUrl;
+      updatedImageId = product.imageId;
     }
 
     product.name = productName;
@@ -86,7 +89,7 @@ export async function PUT(req, { params }) {
     product.quantity = parseInt(quantity);
     product.unit = unit;
     product.stock = parseInt(stock);
-    product.seller.address = address;
+    product.address = address;
     product.category = category;
 
     await product.save();

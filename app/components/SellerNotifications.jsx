@@ -10,7 +10,17 @@ const SellerNotifications = ({ orders }) => {
       </h1>
 
       {orders.length === 0 ? (
-        <div className="text-center text-gray-500">No orders to show.</div>
+        <div className="flex flex-col items-center justify-center h-[45vh] gap-2">
+          <img
+            src="/assets/wagaguri1.png"
+            height="180px"
+            width="180px"
+            alt="No Orders Found"
+          />
+          <p className="font-semibold text-gray-500 text-lg">
+            No Orders Found!
+          </p>
+        </div>
       ) : (
         <div className="space-y-6">
           {orders.map((order) => (

@@ -137,42 +137,45 @@ const Navbar = () => {
     pathname.startsWith("/orders") ||
     pathname.startsWith("/products");
 
-  if (isAdmin) {
-    if (onAdminPage) {
-      MenuItems.push(
-        { title: "Dashboard", link: "/Dashboard" },
-        { title: "Users", link: "/Dashboard/users" },
-        { title: "Orders", link: "/Dashboard/orders" }
-      );
-    }
+  if (session) {
+    if (isAdmin) {
+      if (onAdminPage) {
+        MenuItems.push(
+          { title: "Dashboard", link: "/Dashboard" },
+          { title: "Users", link: "/Dashboard/users" },
+          { title: "Orders", link: "/Dashboard/orders" }
+        );
+      }
 
-    if (onSellerPage) {
+      if (onSellerPage) {
+        MenuItems.push(
+          { title: "Sell Item", link: "/seller/sellItem" },
+          { title: "Orders", link: "/seller/orders" }
+        );
+      }
+
+      if (onBuyerPage) {
+        MenuItems.push(
+          { title: "Orders", link: "/orders" },
+          { title: "Cart", link: "/cart" },
+          { title: "Seller", link: "/seller" }
+        );
+      }
+
+      if (!MenuItems.find((item) => item.link === "/Dashboard")) {
+        MenuItems.unshift({ title: "Dashboard", link: "/Dashboard" });
+      }
+    } else if (isSeller || onSellerPage) {
       MenuItems.push(
         { title: "Sell Item", link: "/seller/sellItem" },
         { title: "Orders", link: "/seller/orders" }
       );
-    }
-
-    if (onBuyerPage) {
+    } else if (isBuyer || onBuyerPage) {
       MenuItems.push(
         { title: "Orders", link: "/orders" },
         { title: "Cart", link: "/cart" }
       );
     }
-
-    if (!MenuItems.find((item) => item.link === "/Dashboard")) {
-      MenuItems.unshift({ title: "Dashboard", link: "/Dashboard" });
-    }
-  } else if (isSeller || onSellerPage) {
-    MenuItems.push(
-      { title: "Sell Item", link: "/seller/sellItem" },
-      { title: "Orders", link: "/seller/orders" }
-    );
-  } else if (isBuyer || onBuyerPage) {
-    MenuItems.push(
-      { title: "Orders", link: "/orders" },
-      { title: "Cart", link: "/cart" }
-    );
   }
   const { profileImage } = useUserContext();
 
@@ -207,79 +210,86 @@ const Navbar = () => {
             </h4>
           </div>
         </Link>
-      {mounted &&
-        <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs relative">
-          <input
-            type="text"
-            value={search}
-            suppressHydrationWarning
-            placeholder="Search Products"
-            className="flex-1 bg-transparent focus:outline-none"
-            onChange={(e) => searchProduct(e)}
-          />
-          <Link href={`/search/${search}`} passHref>
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              width={20}
-              height={20}
-              className="bg-black text-white p-2 rounded-full max-md:p-1"
-              onClick={()=>{setSearch("");setSearch("")}}
+        {mounted && (
+          <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs relative">
+            <input
+              type="text"
+              value={search}
+              suppressHydrationWarning
+              placeholder="Search Products"
+              className="flex-1 bg-transparent focus:outline-none"
+              onChange={(e) => searchProduct(e)}
             />
-          </Link>
-          {search && filteredProducts.length > 0 && (
-            <div
-              className="absolute bg-white border border-gray-300 top-[55px] rounded-md mt-1 font-bold  w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:font-semibold max-md:text-xs overflow-y-auto z-50 left-0"                        
-              onClick={() => setSearch("")}
-            >
-              {filteredProducts.map((product,index) => (
-                <div
-                  className={`flex justify-between ${filteredProducts.length == index+1 ? "": "border-b border-gray-300"} items-center p-2 hover:bg-gray-200 w-full hover:cursor-pointer`}
-                  key={product._id}
-                >
-                  <div>
-                    <Link
-                      key={product._id}
-                      href={`/products/${product._id}`}
-                      className="flex items-center gap-2 p-2 w-[300px]"
-                    >
-                      <Image
-                        src={product.imageUrl}
-                        alt={product.name}
-                        width={60}
-                        height={60}
-                        className="rounded-md"
-                      />
-                      <div>
-                        <h3 className="text-gray-700 font-semibold">
-                          {product.name}
+            <Link href={`/search/${search}`} passHref>
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+                width={20}
+                height={20}
+                className="bg-black text-white p-2 rounded-full max-md:p-1"
+                onClick={() => {
+                  setSearch("");
+                  setSearch("");
+                }}
+              />
+            </Link>
+            {search && filteredProducts.length > 0 && (
+              <div
+                className="absolute bg-white border border-gray-300 top-[55px] rounded-md mt-1 font-bold  w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:font-semibold max-md:text-xs overflow-y-auto z-50 left-0"
+                onClick={() => setSearch("")}
+              >
+                {filteredProducts.map((product, index) => (
+                  <div
+                    className={`flex justify-between ${
+                      filteredProducts.length == index + 1
+                        ? ""
+                        : "border-b border-gray-300"
+                    } items-center p-2 hover:bg-gray-200 w-full hover:cursor-pointer`}
+                    key={product._id}
+                  >
+                    <div>
+                      <Link
+                        key={product._id}
+                        href={`/products/${product._id}`}
+                        className="flex items-center gap-2 p-2 w-[300px]"
+                      >
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          width={60}
+                          height={60}
+                          className="rounded-md"
+                        />
+                        <div>
+                          <h3 className="text-gray-700 font-semibold">
+                            {product.name}
+                          </h3>
+                          <p className="text-gray-500">₹{product.price}.00</p>
+                        </div>
+                      </Link>
+                    </div>
+                    <Link href={`/profile/${product.sellerId._id}`}>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-gray-700 text-sm font-semibold">
+                          {product.sellerId.username}
                         </h3>
-                        <p className="text-gray-500">₹{product.price}.00</p>
+                        <Image
+                          src={
+                            product.sellerId.imgURL ||
+                            "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
+                          }
+                          alt="Profile"
+                          width={40}
+                          height={20}
+                          className="rounded-full object-cover h-[30px] w-[30px] border-1 border-red-500 hover:cursor-pointer"
+                        />
                       </div>
                     </Link>
                   </div>
-                  <Link href={`/profile/${product.sellerId._id}`}>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-gray-700 text-sm font-semibold">
-                        {product.sellerId.username}
-                      </h3>
-                      <Image
-                        src={
-                          product.sellerId.imgURL ||
-                          "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
-                        }
-                        alt="Profile"
-                        width={40}
-                        height={20}
-                        className="rounded-full object-cover h-[30px] w-[30px] border-1 border-red-500 hover:cursor-pointer"
-                      />
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-}
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex gap-5 items-center">
           {mounted && (
@@ -334,7 +344,7 @@ const Navbar = () => {
                   alt="Profile"
                   width={40}
                   height={20}
-                  className="rounded-full object-cover  h-[40px] w-[40px]  hover:cursor-pointer"
+                  className="rounded-full object-cover  h-[42px] w-[42px]  hover:cursor-pointer"
                 />
               </Link>
               <FontAwesomeIcon
@@ -379,7 +389,12 @@ const Navbar = () => {
         </div>
 
         {cart.length === 0 ? (
-          <p>Cart is empty</p>
+          <div className="flex flex-col items-center justify-center h-[80vh] gap-2">
+            <img src="/assets/cart3.png" height="200px" width="200px" alt="" />
+            <p className="font-semibold text-gray-500 text-lg">
+              Cart is empty!
+            </p>
+          </div>
         ) : (
           <>
             <div className="flex flex-col justify-between h-[80vh]">

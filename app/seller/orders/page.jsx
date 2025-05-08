@@ -13,7 +13,6 @@ const Orders = async () => {
   }
 
   const orders = await Order.find().populate("items.sellerId").lean();
-  console.log(orders, "Ordersssssssssssssssihfufu");
 
   const filteredOrders = orders.filter((order) =>
     order.items.some(

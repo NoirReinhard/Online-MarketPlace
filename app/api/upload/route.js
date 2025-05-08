@@ -71,13 +71,20 @@ export async function POST(req) {
       );
     }
 
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!allowedMimeTypes.includes(image.type)) {
+      return NextResponse.json(
+        { error: `Unsupported image format. Allowed formats: JPEG, PNG, JPG.` },
+        { status: 400 }
+      );
+    }
+
     const buffer = await fileToBuffer(image);
 
     const result = await uploadImageToCloudinary(buffer);
 
     await connectDB();
     const user = await UserFind();
-    
 
     const product = await Product.create({
       name: productName,
