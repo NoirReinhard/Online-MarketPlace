@@ -1,11 +1,12 @@
+"use server";
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
     buyer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", 
-      required: [true,"buyer id is reqqqqq"],
+      ref: "User",
+      required: [true, "buyer id is reqqqqq"],
     },
     phoneNumber: {
       type: Number,
@@ -30,13 +31,13 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
-        productname: { type: String, required: true }, 
+        productname: { type: String, required: true },
         imageUrl: { type: String, required: true },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },
         sellerId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User", 
+          ref: "User",
           required: true,
         },
       },
@@ -54,7 +55,7 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "paid", "failed"],
       default: "pending",
-    },   
+    },
   },
   { timestamps: true }
 );
