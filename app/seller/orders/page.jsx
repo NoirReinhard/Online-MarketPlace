@@ -1,4 +1,4 @@
-import React from "react";
+"use server";
 import { Order } from "@/app/models/Order";
 import { getSession } from "@/app/lib/getSession";
 import { redirect } from "next/navigation";

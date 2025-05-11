@@ -55,7 +55,7 @@ const SellerProducts = ({ serializedProducts }) => {
           <div className="flex flex-col items-center justify-center h-[50vh] gap-2">
             <img src="/assets/OrdFnd.png" height="180px" width="180px" alt="" />
             <p className="font-semibold text-gray-500 text-lg">
-              No Products in Sale!
+              No Products Found!
             </p>
           </div>
         ) : (

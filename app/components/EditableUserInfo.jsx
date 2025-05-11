@@ -91,7 +91,7 @@ const EditableUserInfo = ({ user }) => {
             <button
               className="absolute top-4 right-4 text-red-500 text-2xl "
               onClick={(e) => {
-                e.stopPropagation(); // prevent closing when clicking the button
+                e.stopPropagation();
                 setImgfull(false);
               }}
             >

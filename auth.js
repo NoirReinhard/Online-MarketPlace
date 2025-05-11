@@ -1,3 +1,4 @@
+"use server";
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { User } from "./app/models/User";

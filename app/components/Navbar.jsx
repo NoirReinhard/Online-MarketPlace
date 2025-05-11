@@ -83,8 +83,6 @@ const Navbar = () => {
       });
   }, [session?.user?.email]);
 
-  console.log(profileImg, "profileImgggggggggggggggg");
-
   const handleSignOut = () => {
     signOut({
       redirect: true,
@@ -92,7 +90,6 @@ const Navbar = () => {
     });
   };
   const pathname = usePathname();
-  console.log(pathname, "pathhhhhhhhhhhhhh");
   const toggleNavigation = () => setToggle(!toggle);
   const cartNavigation = () => setcart(!scart);
 

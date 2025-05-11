@@ -1,4 +1,4 @@
-import React from "react";
+"use server";
 import EditableUserInfo from "@/app/components/EditableUserInfo";
 import { User } from "@/app/models/User";
 import Product from "@/app/models/Products";
@@ -9,7 +9,7 @@ const profile = async ({ params }) => {
   const { id } = params;
   const user = await User.findById(id);
   const session = await getSession();
-  const product = await Product.find({ sellerId: id })
+  const product = await Product.find({ sellerId: id, isAvailable: true })
     .sort({ dateobj: -1, _id: -1 })
     .populate("sellerId");
   const serializedUser = {

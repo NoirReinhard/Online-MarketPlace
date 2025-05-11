@@ -1,16 +1,16 @@
 "use server";
-
 import connectDB from "@/app/lib/db";
 import { User } from "@/app/models/User";
 import { hash } from "bcrypt";
 import { signIn } from "@/auth";
 
 const login = async (formData) => {
-  const email = formData.get("email");
+  const email = formData.get("email")?.toLowerCase();
   const password = formData.get("password");
 
   await connectDB();
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
+  console.log("Login attempt:", user);
 
   if (!user) {
     return { success: false, message: "User not found" };
