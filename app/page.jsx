@@ -1,4 +1,3 @@
-"use server";
 import "./globals.css";
 import { getSession } from "./lib/getSession";
 import { redirect } from "next/navigation";

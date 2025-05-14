@@ -1,4 +1,3 @@
-"use server";
 import { redirect } from "next/navigation";
 import React from "react";
 import { getSession } from "../lib/getSession";

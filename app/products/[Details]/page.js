@@ -1,4 +1,3 @@
-"use server";
 import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
 import Image from "next/image";

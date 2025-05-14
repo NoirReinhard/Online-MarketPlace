@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useUserContext } from "./UserContext";
+import { usePathname } from "next/navigation";
 
 const ProductCard = ({ product, ishome }) => {
   const [show, setshow] = useState(false);
@@ -16,6 +17,7 @@ const ProductCard = ({ product, ishome }) => {
   const { profileImage } = useUserContext();
   const [loading, setLoading] = useState(false);
 
+  const pathname = usePathname();
   const router = useRouter();
   const handleClick = () => {
     router.push(`seller/update-product?id=${product._id}`);
@@ -91,7 +93,7 @@ const ProductCard = ({ product, ishome }) => {
         <Link href={`/profile/${product.sellerId._id}`} passHref>
           <Image
             src={
-              profileImage ||
+              (pathname.startsWith("/profile") && profileImage) ||
               product.sellerId.imgURL ||
               "https://res.cloudinary.com/dpk7ntarg/image/upload/v1746411877/e48089c4-7a32-48ee-b879-0c8a69bbdbe4.png"
             }
