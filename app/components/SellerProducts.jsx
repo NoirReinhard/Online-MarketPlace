@@ -27,7 +27,7 @@ const SellerProducts = ({ serializedProducts }) => {
     setProducts(filteredProducts);
   };
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-10 max-w-7xl mx-auto">
       <>
         <div className="flex flex-wrap gap-4 justify-center mb-8">
           {sellerfilter.map((category) => {

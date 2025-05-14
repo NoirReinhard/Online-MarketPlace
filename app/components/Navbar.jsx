@@ -140,7 +140,6 @@ const Navbar = () => {
         MenuItems.push(
           { title: "Dashboard", link: "/Dashboard" },
           { title: "Users", link: "/Dashboard/users" },
-          { title: "Orders", link: "/Dashboard/orders" }
         );
       }
 
@@ -360,7 +359,7 @@ const Navbar = () => {
             </>
           ) : (
             mounted && (
-              <Link href="/Login">
+              <Link href="/register">
                 <button className="hidden md:block text-white bg-[#4b5966] rounded-full px-4 py-2">
                   Sign In
                 </button>

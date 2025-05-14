@@ -28,7 +28,7 @@ const Register = async () => {
           <RegisterForm />
         </div>
         <div className="hidden lg:flex lg:w-1/2  items-center justify-center bg-gradient-to-br from-green-50 to-blue-100">
-          <img src="/assets/gojo.jpg" alt="Register" className="h-[520px] w-[480px] object-fit-cover" />
+          <img src="/assets/signu4.jpg" alt="Register" className="h-[520px] w-[520px] object-fit-contain" />
         </div>
       </div>
     </div>

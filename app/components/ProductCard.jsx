@@ -19,9 +19,7 @@ const ProductCard = ({ product, ishome }) => {
 
   const pathname = usePathname();
   const router = useRouter();
-  const handleClick = () => {
-    router.push(`seller/update-product?id=${product._id}`);
-  };
+  
   const handleDelete = async () => {
     try {
       setLoading(true);
@@ -116,11 +114,8 @@ const ProductCard = ({ product, ishome }) => {
       </Link>
       <div className="flex justify-between items-center pt-[15px] ">
         <p className="font-semibold text-2xl">₹{product.price}</p>
-        {!(session?.user?.id == product.sellerId._id) ? (
-          <CartActions product={product} />
-        ) : (
-          <Button label="Update Product" onClick={() => handleClick()}></Button>
-        )}
+
+        <CartActions product={product} />
       </div>
     </div>
   );
