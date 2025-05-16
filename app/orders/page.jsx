@@ -9,18 +9,23 @@ const Page = async () => {
   }
 
   const userId = session.user.id;
-  const orders = await Order.find({ buyer: userId });
+  const orders = await Order.find({ buyer: userId })
+    .sort({ dateobj: -1, _id: -1 })
+    .populate("items.sellerId")
+    .lean();
   const serializedOrders = orders.map((order) => ({
-    ...order.toObject(),
+    ...order,
     _id: order._id.toString(),
     buyer: order.buyer.toString(),
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
     items: order.items.map((item) => ({
-      ...item.toObject(),
+      ...item,
       _id: item._id?.toString() || "",
       productId: item.productId?.toString() || "",
-      sellerId: item.sellerId.toString(),
+      sellerId: item.sellerId?._id?.toString() || "",
+      sellerUsername: item.sellerId?.username || "",
+      sellerEmail: item.sellerId?.email || "",
     })),
   }));
 
@@ -58,25 +63,28 @@ const Page = async () => {
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-6 sm:grid-cols-2">
                 {order.items.map((item) => (
                   <div
                     key={item._id}
-                    className="rounded-lg border border-gray-100 p-3 bg-gray-50"
+                    className="rounded-xl border border-gray-200 p-5 bg-gray-50"
                   >
                     <img
                       src={item.imageUrl}
                       alt={item.productname}
-                      className="h-32 object-contain rounded-md mb-2"
+                      className="h-36 object-contain rounded-md mb-3"
                     />
-                    <div className="text-sm font-medium truncate">
+                    <div className="text-base font-semibold truncate">
                       {item.productname}
                     </div>
-                    <div className="text-xs text-gray-600">
+                    <div className="text-sm text-gray-700">
                       Qty: {item.quantity} | ₹{item.price}
                     </div>
-                    <div className="text-[11px] text-gray-500">
-                      Seller: {item.sellerId}
+                    <div className="text-sm text-gray-500">
+                      Seller: {item.sellerUsername}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Email: {item.sellerEmail}
                     </div>
                   </div>
                 ))}

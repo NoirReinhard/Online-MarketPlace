@@ -137,11 +137,10 @@ const ProductDetails = async ({ params }) => {
           </div>
 
           {/* Cart Button */}
-          {(isSeller === "buyer" || isSeller === "admin") && (
-            <div className="pt-4">
-              <CartActions product={plain_product} />
-            </div>
-          )}
+
+          <div className="pt-4">
+            <CartActions product={plain_product} />
+          </div>
         </div>
       </div>
     </div>

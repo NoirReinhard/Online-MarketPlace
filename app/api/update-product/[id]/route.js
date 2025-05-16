@@ -60,6 +60,18 @@ export async function PUT(req, { params }) {
     const image = formData.get("image");
     const imageUrl = formData.get("imageUrl");
 
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (image) {
+      if (!allowedMimeTypes.includes(image.type)) {
+        return NextResponse.json(
+          {
+            error: `Unsupported image format. Allowed formats: JPEG, PNG, JPG.`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     const product = await Product.findById(id);
     if (!product) {
       return new Response("Product not found", { status: 404 });

@@ -16,11 +16,7 @@ export default function PaymentSuccess({ searchParams: { amount } }) {
         href="/orders"
         className="bg-white text-purple-500 font-semibold px-2 py-2 rounded-md hover:translate-y-[-10px] transition-all ease-in mt-10 flex items-center justify-center duration-300 w-max"
       >
-        Your Orders{" "}
-        <img
-          src="/assets/arrow-right.svg"
-          className="ml-2 rounded-full bg-white w-8 h-8"
-        ></img>
+        Your Orders{" "}        
       </Link>
       </div>
     </main>

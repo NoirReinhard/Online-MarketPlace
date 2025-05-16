@@ -33,9 +33,9 @@ const SellerNotifications = ({ orders }) => {
                 <h2 className="text-lg sm:text-xl font-semibold text-blue-700">
                   Order ID: <span className="text-gray-700">{order._id}</span>
                 </h2>
-                <span className="text-sm text-gray-500 mt-2 sm:mt-0">
+                {/* <span className="text-sm text-gray-500 mt-2 sm:mt-0">
                   {order.createdAt}
-                </span>
+                </span> */}
               </div>
 
               {/* Buyer Info */}

@@ -139,7 +139,7 @@ const Navbar = () => {
       if (onAdminPage) {
         MenuItems.push(
           { title: "Dashboard", link: "/Dashboard" },
-          { title: "Users", link: "/Dashboard/users" },
+          { title: "Users", link: "/Dashboard/users" }
         );
       }
 
@@ -206,7 +206,7 @@ const Navbar = () => {
             </h4>
           </div>
         </Link>
-        {mounted && (
+        {mounted && session && session?.user?.role != "seller" && (
           <div className="flex items-center  border-black rounded-full border-[3px] px-3 font-bold py-1 w-[448px] max-lg:w-[350px] max-md:w-[250px] max-md:px-2 max-md:w[250px] max-md:font-semibold max-md:text-xs relative">
             <input
               type="text"
