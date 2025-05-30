@@ -1,5 +1,4 @@
 "use server";
-export const runtime = "nodejs";
 import connectDB from "@/app/lib/db";
 import { User } from "@/app/models/User";
 import { hash } from "bcrypt";

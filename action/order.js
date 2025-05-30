@@ -6,7 +6,6 @@ import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
 import { sendEmail } from "@/app/lib/mailer";
 
-export const runtime = "nodejs";
 
 const order = async (formData, cart) => {
   const session = await getSession();
