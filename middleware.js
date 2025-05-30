@@ -1,10 +1,17 @@
-// app/middleware.js or middleware.js
-export function middleware() {
-  // if you want to use token-based logic, use next-auth's getToken here
-  return Response.next();
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+
+export async function middleware(req) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  // If token doesn't exist, redirect to login
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  return NextResponse.next();
 }
 
-// optional config if you want to limit paths
 export const config = {
-  matcher: ["/dashboard/:path*"], // or whatever protected routes
+  matcher: ["/dashboard/:path*", "/seller/:path*"], // Add all protected routes
 };
