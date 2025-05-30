@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 import { Order } from "../models/Order";
 import { getSession } from "../lib/getSession";
 import Button from "../elements/Button";

@@ -1,3 +1,5 @@
+export const runtime = 'nodejs'
+
 import ProductCard from "@/app/components/ProductCard";
 import Product from "@/app/models/Products";
 import React from "react";

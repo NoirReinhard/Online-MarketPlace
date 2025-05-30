@@ -1,3 +1,5 @@
+export const runtime = 'nodejs'
+
 import { Order } from "@/app/models/Order";
 import { getSession } from "@/app/lib/getSession";
 import { redirect } from "next/navigation";

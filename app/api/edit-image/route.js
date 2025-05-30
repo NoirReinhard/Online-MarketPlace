@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 import { v2 as cloudinary } from "cloudinary";
 import connectDB from "@/app/lib/db";
 import { NextResponse } from "next/server";

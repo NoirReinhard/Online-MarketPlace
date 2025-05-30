@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 import { Order } from "@/app/models/Order";
 import connectDB from "@/app/lib/db";
 import { getSession } from "@/app/lib/getSession";

@@ -175,6 +175,7 @@ const Dashboard = () => {
                   >
                     <option>Pending</option>
                     <option>Processing</option>
+                    <option>Shipped</option>
                     <option>Delivered</option>
                     <option>Cancelled</option>
                   </select>

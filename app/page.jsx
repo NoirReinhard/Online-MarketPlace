@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 import "./globals.css";
 import { getSession } from "./lib/getSession";
 import { redirect } from "next/navigation";

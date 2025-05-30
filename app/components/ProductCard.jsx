@@ -19,7 +19,7 @@ const ProductCard = ({ product, ishome }) => {
 
   const pathname = usePathname();
   const router = useRouter();
-  
+
   const handleDelete = async () => {
     try {
       setLoading(true);
@@ -48,7 +48,8 @@ const ProductCard = ({ product, ishome }) => {
     >
       <div className="flex justify-between items-center">
         <p>{product.createdAt}</p>
-        {(ishome == "False" || session?.user?.role == "admin") && (
+        {(session?.user?.id == product.sellerId._id ||
+          session?.user?.role == "admin") && (
           <FaTrash
             className="text-lg hover:cursor-pointer text-red-600"
             onClick={() => setshow(true)}

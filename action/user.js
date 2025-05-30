@@ -1,3 +1,4 @@
+export const runtime = 'nodejs'
 "use server";
 import connectDB from "@/app/lib/db";
 import { User } from "@/app/models/User";
