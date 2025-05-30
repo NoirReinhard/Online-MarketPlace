@@ -1,5 +1,5 @@
-export const runtime = 'nodejs'
 "use server";
+export const runtime = 'nodejs'
 import { Order } from "@/app/models/Order";
 import { getSession } from "@/app/lib/getSession";
 import connectDB from "@/app/lib/db";
