@@ -1,10 +1,12 @@
 "use server";
-export const runtime = 'nodejs'
+
 import { Order } from "@/app/models/Order";
 import { getSession } from "@/app/lib/getSession";
 import connectDB from "@/app/lib/db";
 import Product from "@/app/models/Products";
 import { sendEmail } from "@/app/lib/mailer";
+
+export const runtime = "nodejs";
 
 const order = async (formData, cart) => {
   const session = await getSession();
@@ -21,7 +23,6 @@ const order = async (formData, cart) => {
   for (const item of cart) {
     const { _id, name, imageUrl, price, cquantity } = item;
     const product = await Product.findById(_id).populate("sellerId");
-    const seller = product.sellerId.toObject();
 
     if (!product) {
       return {
@@ -29,6 +30,8 @@ const order = async (formData, cart) => {
         message: `Product with ID ${_id} not found.`,
       };
     }
+
+    const seller = product.sellerId.toObject();
 
     if (product.stock < cquantity) {
       return {
