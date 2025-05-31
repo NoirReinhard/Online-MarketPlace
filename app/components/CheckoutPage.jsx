@@ -66,7 +66,7 @@ const CheckoutPage = ({ amount, isValid, formData }) => {
         elements,
         clientSecret,
         confirmParams: {
-          return_url: `http://localhost:3000/payment-success?amount=${amount}`,
+          return_url: `https://tensai-trade.vercel.app/payment-success?amount=${amount}`,
         },
       });
     }

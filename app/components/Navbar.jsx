@@ -204,7 +204,12 @@ const Navbar = () => {
         </div>
         <Link href="/">
           <div className=" items-end hidden md:flex">
-            <Image src="/assets/Logo2.png" alt="Logo" width={40} height={40} />
+            <Image
+              src="/assets/Background-Removed.png"
+              alt="Logo"
+              width={40}
+              height={40}
+            />
             <h4 className="text-3xl font-semibold ">
               <span className="text-primary">Ten</span>sai Tra
               <span className="text-primary">de</span>
