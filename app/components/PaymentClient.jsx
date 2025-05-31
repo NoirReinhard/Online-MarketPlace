@@ -44,15 +44,32 @@ export default function PaymentClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await order(formData, cart);
-    if (!res.success) {
-      toast.error(res.message);
+    try {
+      const res = await fetch("/api/place-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData, cart }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.message);
+        setLoading(false);
+        return;
+      }
+
+      clearCart();
+      toast.success(data.message);
+      router.push("/orders");
+    } catch (err) {
+      toast.error("Order failed. Try again.");
+      console.error(err);
+    } finally {
       setLoading(false);
-      return;
     }
-    clearCart();
-    toast.success(res.message);
-    router.push("/orders");
   };
 
   return (

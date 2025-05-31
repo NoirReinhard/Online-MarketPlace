@@ -194,7 +194,12 @@ const Navbar = () => {
             className="hover:cursor-pointer md:hidden"
           />
           <Link href="/">
-            <Image src="/assets/Logo2.PNG" alt="Logo" width={30} height={30} />
+            <Image
+              src="/assets/Background-Removed.png"
+              alt="Logo"
+              width={30}
+              height={30}
+            />
           </Link>
         </div>
         <Link href="/">
